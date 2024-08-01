@@ -1,0 +1,31 @@
+0000000000000000000000000000000000000000 226ee74ff4ddbc23aabfa8795777705664c82a23 DeveloperOscar <161139@unamba.edu.pe> 1695774284 -0500	commit (initial): Initial commit
+226ee74ff4ddbc23aabfa8795777705664c82a23 91d46e6244558dcdace499df5a67a7079c9c64f3 DeveloperOscar <161139@unamba.edu.pe> 1695824361 -0500	merge develop: Fast-forward
+91d46e6244558dcdace499df5a67a7079c9c64f3 fe18912e55a9c32161cf910c48909b263546afe9 DeveloperOscar <161139@unamba.edu.pe> 1697576340 -0500	merge release/0.1.0: Merge made by the 'ort' strategy.
+fe18912e55a9c32161cf910c48909b263546afe9 8c94e99cdd860ba165a36bb1d0d3d7e6e1a6acca DeveloperOscar <161139@unamba.edu.pe> 1697746906 -0500	pull: Fast-forward
+8c94e99cdd860ba165a36bb1d0d3d7e6e1a6acca 4c63a6b64502bf4bdbdbb736234f7f07d27ace8b DeveloperOscar <161139@unamba.edu.pe> 1697750423 -0500	merge hotfix/0.1.4: Merge made by the 'ort' strategy.
+4c63a6b64502bf4bdbdbb736234f7f07d27ace8b 03d73df2059e136ee60deb97f5aa77cab44b13b5 DeveloperOscar <161139@unamba.edu.pe> 1697811693 -0500	pull: Fast-forward
+03d73df2059e136ee60deb97f5aa77cab44b13b5 987180a42bebd07e306239719de55defe3bd1b5f DeveloperOscar <161139@unamba.edu.pe> 1697822786 -0500	merge hotfix/0.1.6: Merge made by the 'ort' strategy.
+987180a42bebd07e306239719de55defe3bd1b5f f62ccb669389ddccfbb418fdf8f734dc97bdf884 DeveloperOscar <161139@unamba.edu.pe> 1697837917 -0500	merge hotfix/0.1.7: Merge made by the 'ort' strategy.
+f62ccb669389ddccfbb418fdf8f734dc97bdf884 04cb1a24873ba47be3884d6cb639625dd5173843 DeveloperOscar <oscarchh0799@gmail.com> 1698471558 -0500	merge develop: Fast-forward
+04cb1a24873ba47be3884d6cb639625dd5173843 23f8961e696c7952d571585807e5bcc77cfb6231 DeveloperOscar <oscarchh0799@gmail.com> 1698937946 -0500	merge hotfix/0.1.8: Merge made by the 'ort' strategy.
+23f8961e696c7952d571585807e5bcc77cfb6231 0333af98bcd6f421222e047a4d91ef381b654924 DeveloperOscar <oscarchh0799@gmail.com> 1699281013 -0500	merge hotfix/0.1.9: Merge made by the 'ort' strategy.
+0333af98bcd6f421222e047a4d91ef381b654924 39c541ecf929ee6086698750a15a719bcf51d387 DeveloperOscar <oscarchh0799@gmail.com> 1699283072 -0500	merge hotfix/0.1.10: Merge made by the 'ort' strategy.
+39c541ecf929ee6086698750a15a719bcf51d387 82b2046a9e23f25d319ede222af9ad32b934e031 DeveloperOscar <oscarchh0799@gmail.com> 1699286927 -0500	merge release/0.2.0: Merge made by the 'ort' strategy.
+82b2046a9e23f25d319ede222af9ad32b934e031 b2a6256c5caf769e6f038ec8eed8fd3d9e4c6c81 DeveloperOscar <oscarchh0799@gmail.com> 1699310847 -0500	merge develop: Fast-forward
+b2a6256c5caf769e6f038ec8eed8fd3d9e4c6c81 eea3e398086991ab36f6887633030674e24f8250 DeveloperOscar <oscarchh0799@gmail.com> 1699810457 -0500	merge develop: Fast-forward
+eea3e398086991ab36f6887633030674e24f8250 4b29a11618f22c2531dcce72a352d8de606fd02c DeveloperOscar <oscarchh0799@gmail.com> 1701445333 -0500	merge hotfix/0.2.1: Merge made by the 'ort' strategy.
+4b29a11618f22c2531dcce72a352d8de606fd02c 41bfa5858e3152fc3bd2d6d7b76000d043ae5185 DeveloperOscar <oscarchh0799@gmail.com> 1701446032 -0500	merge hotfix/0.2.2: Merge made by the 'ort' strategy.
+41bfa5858e3152fc3bd2d6d7b76000d043ae5185 7a756d6db48907e24615f6e3e51e0b05cdf9f26a DeveloperOscar <oscarchh0799@gmail.com> 1701446093 -0500	merge release/0.3.0: Merge made by the 'ort' strategy.
+7a756d6db48907e24615f6e3e51e0b05cdf9f26a 1da636c620d84ec7941af82df2dbb2ac6b294ce3 DeveloperOscar <oscarchh0799@gmail.com> 1701446225 -0500	merge hotfix/0.3.1: Merge made by the 'ort' strategy.
+1da636c620d84ec7941af82df2dbb2ac6b294ce3 83b562bc15b39ce251a7b4a14e07a5ef4d5bad1f DeveloperOscar <oscarchh0799@gmail.com> 1703911480 -0500	merge release/0.4.0: Merge made by the 'ort' strategy.
+83b562bc15b39ce251a7b4a14e07a5ef4d5bad1f b86dedc5b596f8c4d9def028075ec6c7790cf3b9 DeveloperOscar <oscarchh0799@gmail.com> 1703912032 -0500	merge develop: Fast-forward
+b86dedc5b596f8c4d9def028075ec6c7790cf3b9 0ab34f5855d792c7e172415e11ae6bd81f539d8d DeveloperOscar <oscarchh0799@gmail.com> 1703912142 -0500	merge develop: Fast-forward
+0ab34f5855d792c7e172415e11ae6bd81f539d8d b84e9270c2ae9d6095b1999f70706ef677590f1d DeveloperOscar <oscarchh0799@gmail.com> 1703912231 -0500	merge develop: Fast-forward
+b84e9270c2ae9d6095b1999f70706ef677590f1d 61a014d0b052dfc3e4db949c837db448b5f15478 DeveloperOscar <oscarchh0799@gmail.com> 1708441864 -0500	merge release/0.5.0: Merge made by the 'ort' strategy.
+61a014d0b052dfc3e4db949c837db448b5f15478 abf4f49bb29a3a960cb940acd7c95c4ffbec41d4 OscarDevCPP <oscarchh0799@gmail.com> 1718320751 -0500	merge release/1.0.0: Merge made by the 'ort' strategy.
+abf4f49bb29a3a960cb940acd7c95c4ffbec41d4 86615131c3f051e28b0c0861afcb2c20dbbc071c OscarDevCPP <oscarchh0799@gmail.com> 1718388610 -0500	merge hotfix/1.0.1: Merge made by the 'ort' strategy.
+86615131c3f051e28b0c0861afcb2c20dbbc071c c1c2213bfb15ea7a93ddd3f2fd8d9221af1e80f9 OscarDevCPP <oscarchh0799@gmail.com> 1718390011 -0500	merge hotfix/1.0.2: Merge made by the 'ort' strategy.
+c1c2213bfb15ea7a93ddd3f2fd8d9221af1e80f9 244c16e482d1b6fb9f4e46c69f94cf836cdf097e OscarDevCPP <oscarchh0799@gmail.com> 1718466561 -0500	merge develop: Fast-forward
+244c16e482d1b6fb9f4e46c69f94cf836cdf097e ba4b50a4584b6c869881dd00562a22e3f8cac0f9 OscarDevCPP <oscarchh0799@gmail.com> 1720040829 -0500	merge hotfix/1.0.3: Merge made by the 'ort' strategy.
+ba4b50a4584b6c869881dd00562a22e3f8cac0f9 7d305c08da0426c110fd32f2a7c878021dbbefc4 OscarDevCPP <oscarchh0799@gmail.com> 1720106752 -0500	merge hotfix/1.0.4: Merge made by the 'ort' strategy.
+7d305c08da0426c110fd32f2a7c878021dbbefc4 6dc37a11355ea38d39ced4eff4273e9db53c9961 OscarDevCPP <oscarchh0799@gmail.com> 1720106825 -0500	merge develop: Fast-forward

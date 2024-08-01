@@ -1,0 +1,35 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[gitflow "branch"]
+	master = main
+	develop = develop
+[gitflow "prefix"]
+	feature = feature/
+	bugfix = bugfix/
+	release = release/
+	hotfix = hotfix/
+	support = support/
+	versiontag = 
+[gitflow "path"]
+	hooks = .git/git-flow-hooks
+[remote "origin"]
+	url = git@github.com:puyu-pe/JTicketDesign.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "develop"]
+	remote = origin
+	merge = refs/heads/develop
+[pull]
+	rebase = false
+[gitflow "branch.release/0.6.0"]
+	base = develop
+[gitflow "branch.feature/refactor-sweet-ticket-desing"]
+	base = develop
+[branch "feature/refactor-sweet-ticket-desing"]
+	remote = origin
+	merge = refs/heads/feature/refactor-sweet-ticket-desing

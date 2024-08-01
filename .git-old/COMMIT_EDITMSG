@@ -1,0 +1,17 @@
+Cambia datos de JTicketDesign a SweetTicketDesign
+
+issue #41
+# Por favor ingresa el mensaje del commit para tus cambios. Las
+#  líneas que comiencen con '#' serán ignoradas, y un mensaje
+#  vacío aborta el commit.
+#
+# En la rama feature/refactor-sweet-ticket-desing
+# Tu rama está adelantada a 'origin/feature/refactor-sweet-ticket-desing' por 1 commit.
+#   (usa "git push" para publicar tus commits locales)
+#
+# Cambios a ser confirmados:
+#	modificados:     README.md
+#	modificados:     docs/tables.md
+#	modificados:     pom.xml
+#	modificados:     src/main/java/module-info.java
+#
