@@ -9,7 +9,4 @@ module pe.puyu.SweetTicketDesign {
     exports pe.puyu.SweetTicketDesign.application.builder.gson;
     exports pe.puyu.SweetTicketDesign.application.components;
     exports pe.puyu.SweetTicketDesign.application.printer.escpos;
-    exports pe.puyu.SweetTicketDesign.domain.table.util.escpos;
-    exports pe.puyu.SweetTicketDesign.domain.table;
-    exports pe.puyu.SweetTicketDesign.domain.table.util;
 }

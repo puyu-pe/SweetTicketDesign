@@ -11,7 +11,6 @@ import pe.puyu.SweetTicketDesign.application.builder.gson.GsonPrinterObjectBuild
 import pe.puyu.SweetTicketDesign.application.printer.escpos.EscPosPrinter;
 import pe.puyu.SweetTicketDesign.domain.designer.SweetDesigner;
 import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinter;
-import pe.puyu.SweetTicketDesign.domain.table.SweetTableDesign;
 
 import javax.print.PrintService;
 
@@ -35,15 +34,6 @@ public class Main {
         SweetPrinter printer = new EscPosPrinter(outputStream);
         SweetDesigner designer = new SweetDesigner(builder, printer, new DefaultComponentsProvider());
         designer.paintDesign();
-    }
-
-
-    private static void testTableDesign(OutputStream outputStream) throws IOException {
-        String pathToFile = "/home/socamaru/Documentos/projects/testPrintJson/tables.json";
-        FileReader reader = new FileReader(pathToFile);
-        JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
-        SweetTableDesign tableDesign = new SweetTableDesign(jsonObject);
-        outputStream.write(tableDesign.getBytes());
     }
 
     private static TcpIpOutputStream ip(String ip) throws IOException {
