@@ -105,6 +105,6 @@ Basicamente SweetTicketDesign espera como parametros:
 ## PukaHttp
 
 Puka Http es una herramienta multiplataforma que actua como servicio de impresión. Implementa una Api http para la impresión de ticketes en impresoras termicas y 
-usa SweetTicketDesign para el diseño de los tickets. Puka Http maneja la comunicación a diferentes tipos de ticketes (red, usb, samba, etc.)
+usa SweetTicketDesign para el diseño de los tickets. Puka Http maneja la comunicación a diferentes tipos de impresoras termicas (red, usb, samba, etc.)
 
 Se puede descargar el instalador multiplataforma desde [su pagina de descarga.](https://www.jdeploy.com/gh/puyu-pe/puka-http).
