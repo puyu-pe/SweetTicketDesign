@@ -14,20 +14,18 @@
 ```
 
 [![Maven Central](https://img.shields.io/maven-central/v/pe.puyu/SweetTicketDesign.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/pe.puyu/SweetTicketDesign)<br>
-SweetTicketDesign genera varios tipos de diseño para tickets que se imprimiran en una ticketera termica,
-apartir de un objeto json, [vea Modelos de tickets soportados](#modelos-de-tickets-soportados), Se apoya en
-la libreria [escpos coffee](https://github.com/anastaciocintra/escpos-coffee)
-para la generación de comandos escpos.
+SweetTicketDesign implementa interfaces y especificaciones para el diseño tickets responsives en impresoras.
+Trae incluido 
+- EscPosPrinter: Una implementación de SweetPrinter para renderizar los diseños en ticketeras termicas
+  usando comandos escpos usando la libreria [escpos coffee](https://github.com/anastaciocintra/escpos-coffee)
+- GsonPrinterObjectBuilder: Una implementación de SweetPrinterObjectBuilder para construción de componentes de impresión 
+  a travéz archivos json.
+- DefaultComponentsProvider: Un proveedor de componentes de impresión con valores aceptables por defecto.
 
 1. [Empezando](#empezando)
 2. [Uso basico](#uso-basico)
-3. [Propiedades de diseño](#propiedades-disenio)
-4. [Modelos de tickets soportados](#modelos-ticket-soportados)
-   1. [Estructura general](#estructura-general)
-   2. [Ejemplos de formato json para el diseño de tickets](#ejemplos-disenio-ticket)
-5. [Considerar logo y QR en el diseño de tickets (boleta y facturas)](#codigo-qr-ticket)
-6. [Diseño de tablas, a partir de la versión 1.0.0](#disenio-tablas)
-7. [Extra: Utilidad de impresión](#referencia-puka)
+[Considerar logo y QR en el diseño de tickets (boleta y facturas)](#codigo-qr-ticket)
+[Extra: Utilidad de impresión](#referencia-puka)
 
 <h2 id="empezando">✨Empezando</h2>
 
