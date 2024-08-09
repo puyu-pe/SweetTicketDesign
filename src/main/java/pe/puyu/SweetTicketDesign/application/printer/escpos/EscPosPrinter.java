@@ -87,7 +87,7 @@ public class EscPosPrinter implements SweetPrinter {
         }
     }
 
-    public void writBitImage(BufferedImage image, Bitonal algorithm) {
+    private void writBitImage(BufferedImage image, Bitonal algorithm) {
         try {
             EscPosImage escPosImage = new EscPosImage(new CoffeeImageImpl(image), algorithm);
             RasterBitImageWrapper imageWrapper = new RasterBitImageWrapper();
