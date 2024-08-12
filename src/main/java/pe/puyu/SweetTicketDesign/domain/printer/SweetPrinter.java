@@ -17,5 +17,5 @@ public interface SweetPrinter {
 
     void cut(@NotNull Integer feed, @NotNull SweetCutMode mode);
 
-    void openDrawer(@NotNull SweetPinConnector pin, int t1, int t2);
+    void openDrawerWithCut(@NotNull SweetPinConnector pin, int t1, int t2);
 }
