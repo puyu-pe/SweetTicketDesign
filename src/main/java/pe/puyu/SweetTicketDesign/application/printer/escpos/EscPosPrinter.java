@@ -62,9 +62,10 @@ public class EscPosPrinter implements SweetPrinter {
     }
 
     @Override
-    public void openDrawer(@NotNull SweetPinConnector pin, int t1, int t2) {
+    public void openDrawerWithCut(@NotNull SweetPinConnector pin, int t1, int t2) {
         try {
             this.escpos.pulsePin(EscPosUtil.toPinConnector(pin), t1, t2);
+            this.escpos.cut(EscPos.CutMode.PART);
         } catch (Exception ignored) {
 
         }
