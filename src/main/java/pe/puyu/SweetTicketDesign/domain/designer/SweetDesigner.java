@@ -190,7 +190,6 @@ public class SweetDesigner {
             for (int i = 0; i < row.size(); ++i) {
                 SweetCell cell = row.get(i);
                 boolean isLastElement = i + 1 >= row.size();
-                cell = helper.justifyCell(cell);
                 cell = helper.normalize(cell);
                 if (!isLastElement) {
                     SweetPrinterStyle gapStyle = new SweetPrinterStyle(
@@ -200,18 +199,51 @@ public class SweetDesigner {
                         cell.printerStyle().bgInverted(),
                         cell.printerStyle().charCode()
                     );
-                    printer.print(cell.text(), cell.printerStyle());
+                    printCell(cell, false);
                     remainingWidth -= cell.width();
                     if (remainingWidth > 0) {
                         printer.print(separator.repeat(gap), gapStyle);
                         remainingWidth -= gap;
                     }
                 } else {
-                    printer.println(cell.text(), cell.printerStyle());
+                    printCell(cell, true);
                 }
             }
         }
     }
+
+    private void printCell(SweetCell cell, boolean feed) {
+        int spacesAvailable = Math.max(cell.width() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
+        int startSpaces = spacesAvailable / 2;
+        int endSpaces = spacesAvailable - startSpaces;
+        SweetPrinterStyle cellStyle = cell.printerStyle();
+        SweetPrinterStyle padStyle = new SweetPrinterStyle(
+            1,
+            1,
+            cellStyle.bold(),
+            cellStyle.bgInverted(),
+            cell.printerStyle().charCode()
+        );
+        String pad = cell.stringStyle().pad().toString();
+        switch (cell.stringStyle().align()) {
+            case CENTER:
+                printer.print(pad.repeat(startSpaces), padStyle);
+                printer.print(cell.text(), cellStyle);
+                printer.print(pad.repeat(endSpaces), padStyle);
+                break;
+            case RIGHT:
+                printer.print(pad.repeat(spacesAvailable), padStyle);
+                printer.print(cell.text(), cellStyle);
+                break;
+            default: // LEFT
+                printer.print(cell.text(), cellStyle);
+                printer.print(pad.repeat(spacesAvailable), padStyle);
+        }
+        if (feed) {
+            printer.println("", padStyle);
+        }
+    }
+
 
     private @NotNull List<SweetRow> wrapRow(@NotNull SweetRow row, @NotNull SweetDesignHelper helper) {
         List<SweetRow> matrix = new LinkedList<>();
