@@ -208,24 +208,6 @@ public class SweetDesignHelper {
         return new SweetCell(cell);
     }
 
-    public @NotNull SweetCell justifyCell(SweetCell cell) {
-        int spacesAvailable = Math.max(cell.width() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
-        int startSpaces = spacesAvailable / 2;
-        int endSpaces = spacesAvailable - startSpaces;
-        String pad = cell.stringStyle().pad().toString();
-        String justifiedText = switch (cell.stringStyle().align()) {
-            case RIGHT -> pad.repeat(spacesAvailable) + cell.text();
-            case CENTER -> pad.repeat(startSpaces) + cell.text() + pad.repeat(endSpaces);
-            case LEFT -> cell.text() + pad.repeat(spacesAvailable);
-        };
-        return new SweetCell(
-            justifiedText,
-            cell.width(),
-            new SweetPrinterStyle(cell.printerStyle()),
-            new SweetStringStyle(cell.stringStyle())
-        );
-    }
-
     public int calcWidthPaperInPx() {
         int pixelsPerCharacter = 11;
         return _properties.blockWidth() * pixelsPerCharacter + _properties.blockWidth();

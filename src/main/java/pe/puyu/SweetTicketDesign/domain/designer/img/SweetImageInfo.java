@@ -1,6 +1,5 @@
 package pe.puyu.SweetTicketDesign.domain.designer.img;
 
-
 import org.jetbrains.annotations.NotNull;
 import pe.puyu.SweetTicketDesign.domain.components.block.SweetJustify;
 import pe.puyu.SweetTicketDesign.domain.components.block.SweetScale;

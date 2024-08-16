@@ -2,6 +2,7 @@ package pe.puyu.SweetTicketDesign;
 
 import java.io.*;
 
+import com.github.anastaciocintra.escpos.EscPos;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import com.github.anastaciocintra.output.TcpIpOutputStream;
 import com.google.gson.JsonObject;
@@ -16,7 +17,8 @@ import javax.print.PrintService;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        try (OutputStream outputStream = ip("192.168.1.38")) {
+        try (OutputStream outputStream = ip("192.168.18.39")) {
+            //FIXME: corregir el problema de la linea doble
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             testSweetDesigner(byteArrayOutputStream);
             outputStream.write(byteArrayOutputStream.toByteArray());
