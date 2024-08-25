@@ -143,7 +143,7 @@ public class SweetDesignHelper {
 
     public @NotNull List<String> wrapText(String text, int numberOfCharactersAvailable, int fontWidth) {
         List<String> wrappedText = new LinkedList<>();
-        if (text.length() <= numberOfCharactersAvailable) {
+        if (text.length() * fontWidth <= numberOfCharactersAvailable) {
             wrappedText.add(text);
             return wrappedText;
         }
@@ -151,7 +151,7 @@ public class SweetDesignHelper {
         fontWidth = Math.max(0, fontWidth);
         String[] splitWords = text.split("\\s+"); // divide in words
         List<String> words = new LinkedList<>();
-        String midCharacter = "-";
+        String space = " ";
         for (String word : splitWords) {
             int sliceWidth = fontWidth == 0 ? 0 : numberOfCharactersAvailable / fontWidth;
             words.addAll(sliceWordInEqualParts(word, sliceWidth));
@@ -162,7 +162,7 @@ public class SweetDesignHelper {
             int numberCharactersCoveredByCurrentWord = currentWord.length() * fontWidth;
             int midCharacterCovered = 0;
             while ((newString.length() * fontWidth) + numberCharactersCoveredByCurrentWord + midCharacterCovered <= numberOfCharactersAvailable) {
-                newString.append(newString.isEmpty() ? currentWord : midCharacter + currentWord);
+                newString.append(newString.isEmpty() ? currentWord : space + currentWord);
                 midCharacterCovered = 1;
                 ++i;
                 if (i >= words.size())
