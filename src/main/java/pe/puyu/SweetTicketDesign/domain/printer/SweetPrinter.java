@@ -15,7 +15,7 @@ public interface SweetPrinter {
 
     void printQr(@NotNull String data, @NotNull SweetPrinterQrHints hints);
 
-    void cut(@NotNull Integer feed, @NotNull SweetCutMode mode);
+    void cut(@NotNull SweetCutOptions options);
 
-    void openDrawerWithCut(@NotNull SweetPinConnector pin, int t1, int t2);
+    void openDrawerWithCut(@NotNull SweetDrawerOptions drawerOptions, @NotNull SweetCutOptions cutOptions);
 }

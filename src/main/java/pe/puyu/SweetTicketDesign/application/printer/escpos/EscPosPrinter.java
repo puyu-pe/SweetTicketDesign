@@ -7,9 +7,7 @@ import com.github.anastaciocintra.escpos.image.*;
 import org.jetbrains.annotations.NotNull;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutMode;
 import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetPinConnector;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinter;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinterStyle;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinterQrHints;
+import pe.puyu.SweetTicketDesign.domain.printer.*;
 
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
@@ -52,20 +50,20 @@ public class EscPosPrinter implements SweetPrinter {
     }
 
     @Override
-    public void cut(@NotNull Integer feed, @NotNull SweetCutMode mode) {
+    public void cut(@NotNull SweetCutOptions options) {
         try {
-            this.escpos.feed(feed);
-            this.escpos.cut(EscPosUtil.toEscPosCutMode(mode));
+            this.escpos.feed(options.feed());
+            this.escpos.cut(EscPosUtil.toEscPosCutMode(options.mode()));
         } catch (Exception ignored) {
 
         }
     }
 
     @Override
-    public void openDrawerWithCut(@NotNull SweetPinConnector pin, int t1, int t2) {
+    public void openDrawerWithCut(@NotNull SweetDrawerOptions drawerOptions, @NotNull SweetCutOptions cutOptions) {
         try {
-            this.escpos.pulsePin(EscPosUtil.toPinConnector(pin), t1, t2);
-            this.escpos.cut(EscPos.CutMode.PART);
+            this.escpos.pulsePin(EscPosUtil.toPinConnector(drawerOptions.pin()), drawerOptions.t1(), drawerOptions.t2());
+            this.cut(cutOptions);
         } catch (Exception ignored) {
 
         }
