@@ -21,9 +21,7 @@ import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetOpenDrawerCompone
 import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetPinConnector;
 import pe.puyu.SweetTicketDesign.domain.components.SweetDefaultComponentsProvider;
 import pe.puyu.SweetTicketDesign.domain.components.block.SweetCellComponent;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinter;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinterStyle;
-import pe.puyu.SweetTicketDesign.domain.printer.SweetPrinterQrHints;
+import pe.puyu.SweetTicketDesign.domain.printer.*;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -287,7 +285,8 @@ public class SweetDesigner {
     }
 
     private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper) {
-        // Note: calls always openDrawer before cut
+        SweetProperties.CutProperty cutProperty = helper.getProperties().cutProperty();
+        SweetCutOptions cutOptions = new SweetCutOptions(cutProperty.feed(), cutProperty.mode());
         if (openDrawer != null) {
             SweetPinConnector pin = SweetPinConnector.Pin_2;
             int t1 = 120, t2 = 240;
@@ -298,10 +297,9 @@ public class SweetDesigner {
             pin = Optional.ofNullable(openDrawer.pin()).orElse(pin);
             t1 = Optional.ofNullable(openDrawer.t1()).orElse(t1);
             t2 = Optional.ofNullable(openDrawer.t2()).orElse(t2);
-            printer.openDrawerWithCut(pin, t1, t2);
+            printer.openDrawerWithCut(new SweetDrawerOptions(pin, t1, t2), cutOptions);
         } else {
-            SweetProperties.CutProperty cutProperty = helper.getProperties().cutProperty();
-            printer.cut(cutProperty.feed(), cutProperty.mode());
+            printer.cut(cutOptions);
         }
     }
 
