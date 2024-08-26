@@ -41,7 +41,7 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             false,
             ' ',
             SweetJustify.LEFT,
-            1,
+            2,
             SweetScale.SMOOTH,
             290,
             290
