@@ -83,7 +83,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 null,
                 null,
                 null,
-                null,
+                1,
                 null,
                 rows
             );
@@ -121,9 +121,9 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 styleElement.getBoolean("normalize"),
                 styleElement.getBoolean("bgInverted"),
                 styleElement.getCharacter("pad"),
-                SweetJustify.fromValue(styleElement.getString("align")),
+                SweetJustify.fromValueNullable(styleElement.getString("align")),
                 styleElement.getInt("span"),
-                SweetScale.fromValue(styleElement.getString("scale")),
+                SweetScale.fromValueNullable(styleElement.getString("scale")),
                 styleElement.getInt("width"),
                 styleElement.getInt("height")
             );
