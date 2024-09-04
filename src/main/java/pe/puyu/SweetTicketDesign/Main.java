@@ -2,7 +2,6 @@ package pe.puyu.SweetTicketDesign;
 
 import java.io.*;
 
-import com.github.anastaciocintra.escpos.EscPos;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import com.github.anastaciocintra.output.TcpIpOutputStream;
 import com.google.gson.JsonObject;

@@ -1,6 +1,7 @@
 package pe.puyu.SweetTicketDesign.domain.components.block;
 
 
+import org.jetbrains.annotations.Nullable;
 
 public enum SweetJustify {
     CENTER("CENTER"),
@@ -24,7 +25,16 @@ public enum SweetJustify {
         return LEFT;
     }
 
-    public String getValue(){
+    public static @Nullable SweetJustify fromValueNullable(@Nullable String value) {
+        for (SweetJustify type : SweetJustify.values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public String getValue() {
         return value;
     }
 }
