@@ -10,7 +10,6 @@ public record SweetBlockComponent(
     @Nullable Character separator,
     @Nullable SweetQrComponent qr,
     @Nullable String imgPath,
-    @Nullable Integer nColumns,
     @Nullable Map<@NotNull String, @Nullable SweetStyleComponent> styles,
     @Nullable List<@Nullable List<@Nullable SweetCellComponent>> rows
 ) {

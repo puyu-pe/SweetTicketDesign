@@ -83,7 +83,6 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 null,
                 null,
                 null,
-                1,
                 null,
                 rows
             );
@@ -94,7 +93,6 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
                 blockElement.getString("imgPath"),
-                blockElement.getInt("nColumns"),
                 buildStyleComponent(blockElement.getElement("styles")),
                 buildRows(blockElement.getElement("rows"))
             );

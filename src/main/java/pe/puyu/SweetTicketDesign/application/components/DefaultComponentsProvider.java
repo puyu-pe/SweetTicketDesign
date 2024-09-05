@@ -55,7 +55,6 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             ' ',
             null,
             null,
-            6,
             new HashMap<>(),
             new LinkedList<>()
         );

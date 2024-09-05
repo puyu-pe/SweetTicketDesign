@@ -103,14 +103,13 @@ public class SweetDesigner {
         SweetBlockComponent defaultBlock = defaultProvider.getBlockComponent();
         int gap = Math.max(Optional.ofNullable(block.gap()).or(() -> Optional.ofNullable(defaultBlock.gap())).orElse(1), 1);
         char separator = Optional.ofNullable(block.separator()).or(() -> Optional.ofNullable(defaultBlock.separator())).orElse(' ');
-        int nColumns = Math.max(Optional.ofNullable(block.nColumns()).or(() -> Optional.ofNullable(defaultBlock.nColumns())).orElse(0), 0);
         var rows = Optional.ofNullable(block.rows()).orElse(new LinkedList<>());
         var styles = Optional.ofNullable(block.styles()).orElse(new HashMap<>());
-        return new SweetTextBlock(gap, separator, nColumns, styles, rows);
+        return new SweetTextBlock(gap, separator, styles, rows);
     }
 
     private @NotNull SweetTable makeSweetTable(@NotNull SweetTextBlock block, @NotNull SweetDesignHelper helper) {
-        SweetTableInfo tableInfo = new SweetTableInfo(block.gap(), block.separator(), Math.max(block.nColumns(), 0));
+        SweetTableInfo tableInfo = new SweetTableInfo(block.gap(), block.separator());
         SweetTable table = new SweetTable(tableInfo);
         List<SweetRow> printRows = block.rows().stream()
             .map(rowDto -> {
@@ -137,10 +136,9 @@ public class SweetDesigner {
     private @NotNull SweetTable phase1CalcWidthAndNormalizeSpan(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTable newTable = new SweetTable(table.getInfo());
         for (SweetRow row : table) {
-            SweetRow newRow = new SweetRow();
+/*            SweetRow newRow = new SweetRow();
             int remainingWidth = helper.getProperties().blockWidth();
             int blockWidth = remainingWidth;
-            int nColumns = table.getInfo().maxNumberOfColumns();
             int coveredColumns = 0;
             for (int i = 0; i < row.size(); ++i) {
                 SweetCell cell = row.get(i);
@@ -166,7 +164,7 @@ public class SweetDesigner {
                 SweetPrinterStyle sweetPrinterStyle = new SweetPrinterStyle(cell.printerStyle());
                 newRow.add(new SweetCell(cell.text(), cellWidth, sweetPrinterStyle, newStringStyle));
             }
-            newTable.add(newRow);
+            newTable.add(newRow);*/
         }
         return newTable;
     }
