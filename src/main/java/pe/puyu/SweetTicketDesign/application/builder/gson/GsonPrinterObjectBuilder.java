@@ -120,7 +120,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 styleElement.getBoolean("bgInverted"),
                 styleElement.getCharacter("pad"),
                 SweetJustify.fromValueNullable(styleElement.getString("align")),
-                styleElement.getInt("span"),
+                styleElement.getInt("charxels"),
                 SweetScale.fromValueNullable(styleElement.getString("scale")),
                 styleElement.getInt("width"),
                 styleElement.getInt("height")

@@ -93,7 +93,7 @@ public class SweetDesigner {
         } else {
             SweetTextBlock textBlock = makeTextBlock(block);
             SweetTable table = makeSweetTable(textBlock, helper);
-            table = phase1CalcWidthAndNormalizeSpan(table, helper);
+            table = phase1CalcWidthAndNormalizeCharxels(table, helper);
             table = phase2WrapRows(table, helper);
             phase3PrintRow(table, helper);
         }
@@ -133,7 +133,7 @@ public class SweetDesigner {
         return table;
     }
 
-    private @NotNull SweetTable phase1CalcWidthAndNormalizeSpan(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
+    private @NotNull SweetTable phase1CalcWidthAndNormalizeCharxels(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTable newTable = new SweetTable(table.getInfo());
         for (SweetRow row : table) {
 /*            SweetRow newRow = new SweetRow();
@@ -142,11 +142,11 @@ public class SweetDesigner {
             int coveredColumns = 0;
             for (int i = 0; i < row.size(); ++i) {
                 SweetCell cell = row.get(i);
-                int span = Math.min(Math.max(cell.stringStyle().span(), 0), nColumns); // normalize span in range (0, max)
-                int cellWidth = nColumns == 0 ? 0 : Math.min(span * blockWidth / nColumns, remainingWidth);
+                int charxels = Math.min(Math.max(cell.stringStyle().charxels(), 0), nColumns); // normalize charxels in range (0, max)
+                int cellWidth = nColumns == 0 ? 0 : Math.min(charxels * blockWidth / nColumns, remainingWidth);
                 int coverWidthByCell = cellWidth;
                 boolean isLastItem = i + 1 >= row.size();
-                coveredColumns += span;
+                coveredColumns += charxels;
                 if (!isLastItem && (remainingWidth - cellWidth) > 0) { // is not the last item
                     int gap = table.getInfo().gap();
                     cellWidth = Math.max(cellWidth - gap, 0); // consider intermediate space
@@ -156,7 +156,7 @@ public class SweetDesigner {
                 }
                 remainingWidth -= coverWidthByCell;
                 SweetStringStyle newStringStyle = new SweetStringStyle(
-                    span,
+                    charxels,
                     cell.stringStyle().pad(),
                     cell.stringStyle().align(),
                     cell.stringStyle().normalize()
