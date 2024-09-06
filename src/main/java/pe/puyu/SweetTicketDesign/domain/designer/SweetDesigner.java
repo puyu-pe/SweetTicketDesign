@@ -155,26 +155,24 @@ public class SweetDesigner {
             int autoCharxelsResidue = countCharxelZeros <= 0 ? 0 : remainingCharxels % countCharxelZeros;
             int coveredCharxels = 0;
             for (SweetCell cell : row) {
-                if (coveredCharxels >= blockWidth) {
-                    break;
-                }
+                int newCharxels = cell.stringStyle().charxels();
                 SweetCell newCell;
                 if (cell.stringStyle().charxels() == 0) {
-                    int charxels = autoCharxels;
+                    newCharxels = autoCharxels;
                     if (countCharxelZeros == 1) {
-                        charxels += autoCharxelsResidue;
+                        newCharxels += autoCharxelsResidue;
                     }
-                    SweetStringStyle newStringStyle = new SweetStringStyle(
-                        charxels,
-                        cell.stringStyle().pad(),
-                        cell.stringStyle().align(),
-                        cell.stringStyle().normalize()
-                    );
-                    newCell = new SweetCell(cell.text(), new SweetPrinterStyle(cell.printerStyle()), newStringStyle);
                     --countCharxelZeros;
-                } else {
-                    newCell = new SweetCell(cell);
+                } else if (coveredCharxels + newCharxels >= blockWidth) {
+                    newCharxels = Math.max(0, blockWidth - coveredCharxels);
                 }
+                SweetStringStyle newStringStyle = new SweetStringStyle(
+                    newCharxels,
+                    cell.stringStyle().pad(),
+                    cell.stringStyle().align(),
+                    cell.stringStyle().normalize()
+                );
+                newCell = new SweetCell(cell.text(), new SweetPrinterStyle(cell.printerStyle()), newStringStyle);
                 newRow.add(newCell);
                 coveredCharxels += newCell.stringStyle().charxels();
             }
