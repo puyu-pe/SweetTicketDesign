@@ -38,7 +38,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             SweetPropertiesComponent properties = buildPropertiesComponent();
             List<SweetBlockComponent> blocks = buildBlockComponent();
             SweetOpenDrawerComponent openDrawer = buildOpenDrawerComponent();
-            return new SweetPrinterObjectComponent(properties, blocks, openDrawer);
+            return new SweetPrinterObjectComponent(properties, blocks, openDrawer, buildStylesComponent());
         } catch (Exception e) {
             throw new DesignObjectBuilderException(String.format("GsonPrinterObjectBuilder throw an exception: %s", e.getMessage()), e);
         }
@@ -83,7 +83,6 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 null,
                 null,
                 null,
-                null,
                 rows
             );
         } else if (element.isJsonObject()) {
@@ -93,17 +92,16 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
                 blockElement.getString("imgPath"),
-                buildStyleComponent(blockElement.getElement("styles")),
                 buildRows(blockElement.getElement("rows"))
             );
         }
         return null;
     }
 
-    private @Nullable Map<String, SweetStyleComponent> buildStyleComponent(@Nullable JsonElement styleElement) {
-        if (styleElement != null && styleElement.isJsonObject()) {
+    private @Nullable Map<String, SweetStyleComponent> buildStylesComponent() {
+        if (printerObject.has("styles") && printerObject.get("styles").isJsonObject()) {
             Map<String, SweetStyleComponent> styles = new HashMap<>();
-            styleElement.getAsJsonObject().asMap().forEach((key, element) -> styles.put(key, toStyleComponent(element)));
+            printerObject.getAsJsonObject("styles").asMap().forEach((key, element) -> styles.put(key, toStyleComponent(element)));
             return styles;
         }
         return null;
