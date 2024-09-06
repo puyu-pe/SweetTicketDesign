@@ -37,7 +37,7 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             0,
             SweetScale.SMOOTH,
             290,
-            29,
+            290,
             "WPC1252"
         );
     }
