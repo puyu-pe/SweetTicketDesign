@@ -67,7 +67,7 @@ public class SweetDesignHelper {
         return findByClassName.map(mapper).orElse(value);
     }
 
-    public @NotNull SweetImageStyle makeImageStyle(String className) {
+    public @NotNull SweetImageStyle makeImageStyle(@NotNull String className) {
         SweetScale sweetScale = Optional.ofNullable(_defaultStyle.scale()).orElse(SweetScale.SMOOTH);
         int width = Optional.ofNullable(_defaultStyle.width()).orElse(290);
         int height = Optional.ofNullable(_defaultStyle.height()).orElse(290);
@@ -82,18 +82,15 @@ public class SweetDesignHelper {
         return new SweetImageStyle(sweetScale, width, height, align);
     }
 
-    public @NotNull SweetQrStyle makeQrStyle() {
-        SweetJustify align = SweetJustify.CENTER;
-        int size = 250;
-        SweetScale scale = SweetScale.SMOOTH;
-        align = Optional.ofNullable(_defaultStyle.align()).orElse(align);
-        size = Optional.ofNullable(_defaultStyle.width()).orElse(size);
-        scale = Optional.ofNullable(_defaultStyle.scale()).orElse(scale);
-        Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(_styles.get("$qr"));
-        align = findByClassName.map(SweetStyleComponent::align).orElse(align);
-        size = findByClassName.map(SweetStyleComponent::height).orElse(size); // first height
-        size = findByClassName.map(SweetStyleComponent::width).orElse(size); // priority width
-        scale = findByClassName.map(SweetStyleComponent::scale).orElse(scale);
+    public @NotNull SweetQrStyle makeQrStyle(@NotNull String className) {
+        SweetJustify align = Optional.ofNullable(_defaultStyle.align()).orElse(SweetJustify.CENTER);
+        int size = Optional.ofNullable(_defaultStyle.width()).orElse(250);
+        SweetScale scale = Optional.ofNullable(_defaultStyle.scale()).orElse(SweetScale.SMOOTH);
+        align = findStylePropertyByClass(className, align, SweetStyleComponent::align);
+        size = findStylePropertyByClass(className, size, SweetStyleComponent::width); // first height
+        size = findStylePropertyByClass(className, size, SweetStyleComponent::height); // priority width
+        scale = findStylePropertyByClass(className, scale, SweetStyleComponent::scale);
+        //normalize size
         size = Math.max(0, Math.min(size, calcWidthPaperInPx()));
         return new SweetQrStyle(align, size, scale);
     }

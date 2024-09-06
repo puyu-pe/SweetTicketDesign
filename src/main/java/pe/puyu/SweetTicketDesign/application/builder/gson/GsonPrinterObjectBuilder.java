@@ -182,11 +182,12 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
         }
         if (element.isJsonPrimitive()) {
             String data = element.getAsString();
-            return new SweetQrComponent(data, null, null);
+            return new SweetQrComponent(data, "", null, null);
         } else if (element.isJsonObject()) {
             GsonObject qrElement = new GsonObject(element.getAsJsonObject());
             return new SweetQrComponent(
                 qrElement.getString("data"),
+                qrElement.getString("class"),
                 SweetQrType.fromValue(qrElement.getString("type")),
                 SweetQrCorrectionLevel.fromValue(qrElement.getString("correctionLevel"))
             );

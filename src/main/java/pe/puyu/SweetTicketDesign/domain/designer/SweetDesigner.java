@@ -85,8 +85,7 @@ public class SweetDesigner {
                         Optional.ofNullable(block.img().path()).orElse(defaultProvider.getImagePath()),
                         Optional.ofNullable(block.img().className()).orElse("")
                     );
-                    String className = Optional.ofNullable(block.img().className()).orElse("");
-                    SweetImageStyle imageStyle = helper.makeImageStyle(className);
+                    SweetImageStyle imageStyle = helper.makeImageStyle(imgInfo.className());
                     SweetImageBlock imgBlock = new SweetImageBlock(imgInfo, helper.calcWidthPaperInPx(), imageStyle);
                     printImg(imgBlock);
                 }
@@ -95,10 +94,11 @@ public class SweetDesigner {
                 if (block.qr() != null) {
                     SweetQrInfo qrInfo = new SweetQrInfo(
                         Optional.ofNullable(block.qr().data()).orElse(defaultProvider.getStringQr()),
+                        Optional.ofNullable(block.qr().className()).orElse(""),
                         Optional.ofNullable(block.qr().qrType()).orElse(defaultProvider.getQrType()),
                         Optional.ofNullable(block.qr().correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
                     );
-                    SweetQrStyle qrStyle = helper.makeQrStyle();
+                    SweetQrStyle qrStyle = helper.makeQrStyle(qrInfo.className());
                     SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
                     printQr(qrBlock);
                 }

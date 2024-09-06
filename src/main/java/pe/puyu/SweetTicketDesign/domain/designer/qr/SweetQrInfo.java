@@ -6,6 +6,7 @@ import pe.puyu.SweetTicketDesign.domain.components.block.SweetQrType;
 
 public record SweetQrInfo(
     @NotNull String data,
+    @NotNull String className,
     @NotNull SweetQrType qrType,
     @NotNull SweetQrCorrectionLevel correctionLevel
 ) {
