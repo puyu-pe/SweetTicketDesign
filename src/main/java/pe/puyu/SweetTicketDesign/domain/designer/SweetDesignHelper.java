@@ -61,7 +61,7 @@ public class SweetDesignHelper {
         @Nullable Map<String, @Nullable SweetStyleComponent> styles
     ) {
         Optional<Map<String, @Nullable SweetStyleComponent>> style = Optional.ofNullable(styles);
-        int span = Optional.ofNullable(_defaultStyle.span()).orElse(1);
+        int charxels = Optional.ofNullable(_defaultStyle.charxels()).orElse(1);
         char pad = Optional.ofNullable(_defaultStyle.pad()).orElse(' ');
         SweetJustify align = Optional.ofNullable(_defaultStyle.align()).orElse(SweetJustify.LEFT);
         boolean normalize = _properties.normalize();
@@ -70,16 +70,17 @@ public class SweetDesignHelper {
             var styleMap = style.get();
             Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(styleMap.get(className));
             Optional<SweetStyleComponent> findByIndex = Optional.ofNullable(styleMap.get(indexStr));
-            span = findByIndex.map(SweetStyleComponent::span).orElse(span);
+            charxels = findByIndex.map(SweetStyleComponent::charxels).orElse(charxels);
             pad = findByIndex.map(SweetStyleComponent::pad).orElse(pad);
             align = findByIndex.map(SweetStyleComponent::align).orElse(align);
             normalize = findByIndex.map(SweetStyleComponent::normalize).orElse(normalize);
-            span = findByClassName.map(SweetStyleComponent::span).orElse(span);
+            charxels = findByClassName.map(SweetStyleComponent::charxels).orElse(charxels);
             pad = findByClassName.map(SweetStyleComponent::pad).orElse(pad);
             align = findByClassName.map(SweetStyleComponent::align).orElse(align);
             normalize = findByClassName.map(SweetStyleComponent::normalize).orElse(normalize);
         }
-        return new SweetStringStyle(span, pad, align, normalize);
+        charxels = Math.max(Math.min(charxels, _properties.blockWidth()), 0); // normalize charxels
+        return new SweetStringStyle(charxels, pad, align, normalize);
     }
 
     public @NotNull SweetImageInfo makeImageInfo(@Nullable Map<String, SweetStyleComponent> styles) {
@@ -200,7 +201,6 @@ public class SweetDesignHelper {
                 .replaceAll("[^\\p{ASCII}]", "");
             return new SweetCell(
                 textNormalized,
-                cell.width(),
                 new SweetPrinterStyle(cell.printerStyle()),
                 new SweetStringStyle(cell.stringStyle())
             );
