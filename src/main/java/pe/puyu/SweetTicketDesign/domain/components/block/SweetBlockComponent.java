@@ -8,7 +8,7 @@ public record SweetBlockComponent(
     @Nullable SweetBlockType type,
     @Nullable Character separator,
     @Nullable SweetQrComponent qr,
-    @Nullable String imgPath,
+    @Nullable SweetImageComponent img,
     @Nullable List<@Nullable List<@Nullable SweetCellComponent>> rows
 ) {
 }

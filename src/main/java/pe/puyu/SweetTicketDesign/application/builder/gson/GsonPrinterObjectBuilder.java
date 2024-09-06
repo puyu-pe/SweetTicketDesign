@@ -38,7 +38,8 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             SweetPropertiesComponent properties = buildPropertiesComponent();
             List<SweetBlockComponent> blocks = buildBlockComponent();
             SweetOpenDrawerComponent openDrawer = buildOpenDrawerComponent();
-            return new SweetPrinterObjectComponent(properties, blocks, openDrawer, buildStylesComponent());
+            Map<String, SweetStyleComponent> styles = buildStylesComponent();
+            return new SweetPrinterObjectComponent(properties, blocks, openDrawer, styles);
         } catch (Exception e) {
             throw new DesignObjectBuilderException(String.format("GsonPrinterObjectBuilder throw an exception: %s", e.getMessage()), e);
         }
@@ -89,7 +90,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 SweetBlockType.fromValueNullable(blockElement.getString("type")),
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
-                blockElement.getString("imgPath"),
+                buildImageComponent(blockElement.getElement("img")),
                 buildRows(blockElement.getElement("rows"))
             );
         }
@@ -188,6 +189,23 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 qrElement.getString("data"),
                 SweetQrType.fromValue(qrElement.getString("type")),
                 SweetQrCorrectionLevel.fromValue(qrElement.getString("correctionLevel"))
+            );
+        }
+        return null;
+    }
+
+    public @Nullable SweetImageComponent buildImageComponent(@Nullable JsonElement element) {
+        if (element == null) {
+            return null;
+        }
+        if (element.isJsonPrimitive()) {
+            String path = element.getAsString();
+            return new SweetImageComponent(path, "");
+        } else if (element.isJsonObject()) {
+            GsonObject qrElement = new GsonObject(element.getAsJsonObject());
+            return new SweetImageComponent(
+                qrElement.getString("path"),
+                qrElement.getString("class")
             );
         }
         return null;

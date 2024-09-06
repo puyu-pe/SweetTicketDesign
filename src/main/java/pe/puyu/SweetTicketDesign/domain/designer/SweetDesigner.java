@@ -7,6 +7,7 @@ import pe.puyu.SweetTicketDesign.domain.components.block.*;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageBlock;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageHelper;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageInfo;
+import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrBlock;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrHelper;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrInfo;
@@ -79,10 +80,14 @@ public class SweetDesigner {
         SweetBlockType type = Optional.ofNullable(block.type()).orElse(defaultProvider.getBlockType());
         switch (type) {
             case IMG:
-                String imagePath = Optional.ofNullable(block.imgPath()).orElse(defaultProvider.getImagePath());
-                if (!imagePath.isBlank()) {
-                    SweetImageInfo imageInfo = helper.makeImageInfo();
-                    SweetImageBlock imgBlock = new SweetImageBlock(imagePath, helper.calcWidthPaperInPx(), imageInfo);
+                if (block.img() != null) {
+                    SweetImageInfo imgInfo = new SweetImageInfo(
+                        Optional.ofNullable(block.img().path()).orElse(defaultProvider.getImagePath()),
+                        Optional.ofNullable(block.img().className()).orElse("")
+                    );
+                    String className = Optional.ofNullable(block.img().className()).orElse("");
+                    SweetImageStyle imageStyle = helper.makeImageStyle(className);
+                    SweetImageBlock imgBlock = new SweetImageBlock(imgInfo, helper.calcWidthPaperInPx(), imageStyle);
                     printImg(imgBlock);
                 }
                 break;
@@ -93,7 +98,7 @@ public class SweetDesigner {
                         Optional.ofNullable(block.qr().qrType()).orElse(defaultProvider.getQrType()),
                         Optional.ofNullable(block.qr().correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
                     );
-                    SweetQrStyle qrStyle = helper.makeQrStyles();
+                    SweetQrStyle qrStyle = helper.makeQrStyle();
                     SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
                     printQr(qrBlock);
                 }
@@ -326,9 +331,9 @@ public class SweetDesigner {
 
     private void printImg(@NotNull SweetImageBlock imageBlock) {
         try {
-            BufferedImage image = SweetImageHelper.toBufferedImage(imageBlock.imgPath());
-            BufferedImage resizedImage = SweetImageHelper.resize(image, imageBlock.imageInfo());
-            BufferedImage justifiedImage = SweetImageHelper.justify(resizedImage, imageBlock.widthInPx(), imageBlock.imageInfo());
+            BufferedImage image = SweetImageHelper.toBufferedImage(imageBlock.info().path());
+            BufferedImage resizedImage = SweetImageHelper.resize(image, imageBlock.style());
+            BufferedImage justifiedImage = SweetImageHelper.justify(resizedImage, imageBlock.widthInPx(), imageBlock.style());
             printer.printImg(justifiedImage);
         } catch (Exception ignored) {
 
@@ -341,7 +346,7 @@ public class SweetDesigner {
             SweetQrStyle style = qrBlock.style();
             if (qrInfo.qrType() == SweetQrType.IMG) {
                 BufferedImage qrImage = SweetQrHelper.generateQr(qrInfo, style.size());
-                SweetImageInfo imageInfo = new SweetImageInfo(style.scale(), style.size(), style.size(), style.align());
+                SweetImageStyle imageInfo = new SweetImageStyle(style.scale(), style.size(), style.size(), style.align());
                 BufferedImage justifiedQr = SweetImageHelper.justify(qrImage, qrBlock.widthInPx(), imageInfo);
                 printer.printImg(justifiedQr);
             } else {

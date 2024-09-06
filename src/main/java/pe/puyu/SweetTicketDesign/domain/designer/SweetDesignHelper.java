@@ -2,7 +2,7 @@ package pe.puyu.SweetTicketDesign.domain.designer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageInfo;
+import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.text.SweetCell;
 import pe.puyu.SweetTicketDesign.domain.designer.text.SweetStringStyle;
@@ -67,26 +67,22 @@ public class SweetDesignHelper {
         return findByClassName.map(mapper).orElse(value);
     }
 
-    public @NotNull SweetImageInfo makeImageInfo() {
-        SweetScale sweetScale = SweetScale.SMOOTH;
-        int width = 290;
-        int height = 290;
-        SweetJustify align = SweetJustify.LEFT;
-        sweetScale = Optional.ofNullable(_defaultStyle.scale()).orElse(sweetScale);
-        width = Optional.ofNullable(_defaultStyle.width()).orElse(width);
-        height = Optional.ofNullable(_defaultStyle.height()).orElse(height);
-        align = Optional.ofNullable(_defaultStyle.align()).orElse(align);
-        Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(_styles.get("$img"));
-        sweetScale = findByClassName.map(SweetStyleComponent::scale).orElse(sweetScale);
-        width = findByClassName.map(SweetStyleComponent::width).orElse(width);
-        height = findByClassName.map(SweetStyleComponent::height).orElse(height);
-        align = findByClassName.map(SweetStyleComponent::align).orElse(align);
+    public @NotNull SweetImageStyle makeImageStyle(String className) {
+        SweetScale sweetScale = Optional.ofNullable(_defaultStyle.scale()).orElse(SweetScale.SMOOTH);
+        int width = Optional.ofNullable(_defaultStyle.width()).orElse(290);
+        int height = Optional.ofNullable(_defaultStyle.height()).orElse(290);
+        SweetJustify align = Optional.ofNullable(_defaultStyle.align()).orElse(SweetJustify.LEFT);
+        sweetScale = findStylePropertyByClass(className, sweetScale, SweetStyleComponent::scale);
+        width = findStylePropertyByClass(className, width, SweetStyleComponent::width);
+        height = findStylePropertyByClass(className, height, SweetStyleComponent::height);
+        align = findStylePropertyByClass(className, align, SweetStyleComponent::align);
+        //normalize width and height
         width = Math.max(Math.min(width, calcWidthPaperInPx()), 0);
         height = Math.max(0, height);
-        return new SweetImageInfo(sweetScale, width, height, align);
+        return new SweetImageStyle(sweetScale, width, height, align);
     }
 
-    public @NotNull SweetQrStyle makeQrStyles() {
+    public @NotNull SweetQrStyle makeQrStyle() {
         SweetJustify align = SweetJustify.CENTER;
         int size = 250;
         SweetScale scale = SweetScale.SMOOTH;
