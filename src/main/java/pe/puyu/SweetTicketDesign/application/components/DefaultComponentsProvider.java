@@ -9,7 +9,6 @@ import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutComponent;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetPropertiesComponent;
 import pe.puyu.SweetTicketDesign.domain.components.SweetDefaultComponentsProvider;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +16,10 @@ import java.util.Map;
 public class DefaultComponentsProvider implements SweetDefaultComponentsProvider {
 
     @Override
-    public @NotNull SweetCellComponent getCellComponent() {
-        return new SweetCellComponent("", "");
-    }
-
-    @Override
     public @NotNull SweetPropertiesComponent getPropertiesComponent() {
         int charactersWidth = 42; // 42 characters equals 72 mm approx.
         return new SweetPropertiesComponent(
             charactersWidth,
-            false,
-            "WPC1252",
             new SweetCutComponent(4, SweetCutMode.PART)
         );
     }
@@ -45,7 +37,8 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             0,
             SweetScale.SMOOTH,
             290,
-            290
+            290,
+            "WPC1252"
         );
     }
 
@@ -66,7 +59,7 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
 
     @Override
     public @NotNull SweetQrCorrectionLevel getQrCorrectionLevel() {
-        return null;
+        return SweetQrCorrectionLevel.Q;
     }
 
     @Override

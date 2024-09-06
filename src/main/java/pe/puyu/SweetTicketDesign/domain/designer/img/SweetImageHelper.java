@@ -17,7 +17,7 @@ public class SweetImageHelper {
     public static BufferedImage justify(
         @NotNull BufferedImage image,
         @NotNull Integer containerWidth,
-        @NotNull SweetImageInfo imageInfo
+        @NotNull SweetImageStyle imageInfo
     ) {
         BufferedImage centerImage = new BufferedImage(containerWidth, imageInfo.height(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = centerImage.createGraphics();
@@ -37,7 +37,7 @@ public class SweetImageHelper {
         return centerImage;
     }
 
-    public static BufferedImage resize(BufferedImage image, SweetImageInfo imageInfo) {
+    public static BufferedImage resize(BufferedImage image, SweetImageStyle imageInfo) {
         Image scaledImage = image.getScaledInstance(imageInfo.width(), imageInfo.height(), toImageScaleType(imageInfo.scale()));
         BufferedImage resizedImage = new BufferedImage(imageInfo.width(), imageInfo.height(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
