@@ -126,11 +126,10 @@ public class SweetDesigner {
             .map(rowDto -> {
                 List<SweetCellComponent> cellRow = Optional.ofNullable(rowDto).orElse(new LinkedList<>());
                 List<SweetCell> row = new LinkedList<>();
-                for (int i = 0; i < cellRow.size(); ++i) {
-                    SweetCellComponent defaultCell = defaultProvider.getCellComponent();
-                    SweetCellComponent cellDto = Optional.ofNullable(cellRow.get(i)).orElse(defaultCell);
-                    String text = Optional.ofNullable(cellDto.text()).or(() -> Optional.ofNullable(defaultCell.text())).orElse("");
-                    String className = Optional.ofNullable(cellDto.className()).or(() -> Optional.ofNullable(defaultCell.className())).orElse("");
+                for (SweetCellComponent sweetCellComponent : cellRow) {
+                    SweetCellComponent cellDto = Optional.ofNullable(sweetCellComponent).orElse(new SweetCellComponent("", ""));
+                    String text = Optional.ofNullable(cellDto.text()).orElse("");
+                    String className = Optional.ofNullable(cellDto.className()).orElse("");
                     SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className);
                     SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className);
                     row.add(new SweetCell(text, sweetPrinterStyle, stringStyle));

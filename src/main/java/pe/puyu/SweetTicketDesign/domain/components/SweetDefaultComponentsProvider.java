@@ -11,9 +11,6 @@ import java.util.Map;
 public interface SweetDefaultComponentsProvider {
 
     @NotNull
-    SweetCellComponent getCellComponent();
-
-    @NotNull
     SweetPropertiesComponent getPropertiesComponent();
 
     @NotNull

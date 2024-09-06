@@ -16,11 +16,6 @@ import java.util.Map;
 public class DefaultComponentsProvider implements SweetDefaultComponentsProvider {
 
     @Override
-    public @NotNull SweetCellComponent getCellComponent() {
-        return new SweetCellComponent("", "");
-    }
-
-    @Override
     public @NotNull SweetPropertiesComponent getPropertiesComponent() {
         int charactersWidth = 42; // 42 characters equals 72 mm approx.
         return new SweetPropertiesComponent(
