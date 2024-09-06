@@ -16,8 +16,7 @@ import javax.print.PrintService;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("success");
-/*        try (OutputStream outputStream = ip("192.168.18.39")) {
+       try (OutputStream outputStream = ip("192.168.18.39")) {
             //FIXME: corregir el problema de la linea doble
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             testSweetDesigner(byteArrayOutputStream);
@@ -25,7 +24,7 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        }*/
+        }
     }
 
     private static void testSweetDesigner(OutputStream outputStream) throws FileNotFoundException {
