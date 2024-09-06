@@ -93,7 +93,7 @@ public class SweetDesigner {
         } else {
             SweetTextBlock textBlock = makeTextBlock(block);
             SweetTable table = makeSweetTable(textBlock, helper);
-            table = phase1CalcWidthAndNormalizeCharxels(table, helper);
+            table = phase1NormalizeCharxels(table, helper);
             table = phase2WrapRows(table, helper);
             phase3PrintRow(table, helper);
         }
@@ -101,15 +101,14 @@ public class SweetDesigner {
 
     private @NotNull SweetTextBlock makeTextBlock(@NotNull SweetBlockComponent block) {
         SweetBlockComponent defaultBlock = defaultProvider.getBlockComponent();
-        int gap = Math.max(Optional.ofNullable(block.gap()).or(() -> Optional.ofNullable(defaultBlock.gap())).orElse(1), 1);
         char separator = Optional.ofNullable(block.separator()).or(() -> Optional.ofNullable(defaultBlock.separator())).orElse(' ');
         var rows = Optional.ofNullable(block.rows()).orElse(new LinkedList<>());
         var styles = Optional.ofNullable(block.styles()).orElse(new HashMap<>());
-        return new SweetTextBlock(gap, separator, styles, rows);
+        return new SweetTextBlock(separator, styles, rows);
     }
 
     private @NotNull SweetTable makeSweetTable(@NotNull SweetTextBlock block, @NotNull SweetDesignHelper helper) {
-        SweetTableInfo tableInfo = new SweetTableInfo(block.gap(), block.separator());
+        SweetTableInfo tableInfo = new SweetTableInfo(block.separator());
         SweetTable table = new SweetTable(tableInfo);
         List<SweetRow> printRows = block.rows().stream()
             .map(rowDto -> {
@@ -122,7 +121,7 @@ public class SweetDesigner {
                     String className = Optional.ofNullable(cellDto.className()).or(() -> Optional.ofNullable(defaultCell.className())).orElse("");
                     SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className, i, block.styles());
                     SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className, i, block.styles());
-                    row.add(new SweetCell(text, 0, sweetPrinterStyle, stringStyle));
+                    row.add(new SweetCell(text, sweetPrinterStyle, stringStyle));
                 }
                 SweetRow printRow = new SweetRow();
                 printRow.addAll(row);
@@ -133,16 +132,16 @@ public class SweetDesigner {
         return table;
     }
 
-    private @NotNull SweetTable phase1CalcWidthAndNormalizeCharxels(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
+    private @NotNull SweetTable phase1NormalizeCharxels(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTable newTable = new SweetTable(table.getInfo());
-        for (SweetRow row : table) {
-/*            SweetRow newRow = new SweetRow();
+/*        for (SweetRow row : table) {
+            SweetRow newRow = new SweetRow();
             int remainingWidth = helper.getProperties().blockWidth();
             int blockWidth = remainingWidth;
             int coveredColumns = 0;
             for (int i = 0; i < row.size(); ++i) {
                 SweetCell cell = row.get(i);
-                int charxels = Math.min(Math.max(cell.stringStyle().charxels(), 0), nColumns); // normalize charxels in range (0, max)
+                int charxels = Math.min(Math.max(cell.stringStyle().charxels(), 0), blockWidth); // normalize charxels in range (0, max)
                 int cellWidth = nColumns == 0 ? 0 : Math.min(charxels * blockWidth / nColumns, remainingWidth);
                 int coverWidthByCell = cellWidth;
                 boolean isLastItem = i + 1 >= row.size();
@@ -152,7 +151,7 @@ public class SweetDesigner {
                     cellWidth = Math.max(cellWidth - gap, 0); // consider intermediate space
                 }
                 if (isLastItem && coveredColumns >= nColumns) {
-                    cellWidth = Math.max(remainingWidth, 0); // cover all remaining width
+                    cellWidth = Math.max(remainingWidth, 0); // cover all remaining charxels
                 }
                 remainingWidth -= coverWidthByCell;
                 SweetStringStyle newStringStyle = new SweetStringStyle(
@@ -164,8 +163,8 @@ public class SweetDesigner {
                 SweetPrinterStyle sweetPrinterStyle = new SweetPrinterStyle(cell.printerStyle());
                 newRow.add(new SweetCell(cell.text(), cellWidth, sweetPrinterStyle, newStringStyle));
             }
-            newTable.add(newRow);*/
-        }
+            newTable.add(newRow);
+        }*/
         return newTable;
     }
 
@@ -180,7 +179,6 @@ public class SweetDesigner {
     private void phase3PrintRow(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTableInfo tableInfo = table.getInfo();
         String separator = tableInfo.separator().toString();
-        int gap = Math.max(tableInfo.gap(), 0);
         for (SweetRow row : table) {
             int remainingWidth = helper.getProperties().blockWidth();
             for (int i = 0; i < row.size(); ++i) {
@@ -196,10 +194,10 @@ public class SweetDesigner {
                         cell.printerStyle().charCode()
                     );
                     printCell(cell, false);
-                    remainingWidth -= cell.width();
+                    remainingWidth -= cell.stringStyle().charxels();
                     if (remainingWidth > 0) {
-                        printer.print(separator.repeat(gap), gapStyle);
-                        remainingWidth -= gap;
+                        printer.print(separator.repeat(1), gapStyle);
+                        remainingWidth--;
                     }
                 } else {
                     printCell(cell, true);
@@ -209,7 +207,7 @@ public class SweetDesigner {
     }
 
     private void printCell(SweetCell cell, boolean feed) {
-        int spacesAvailable = Math.max(cell.width() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
+        int spacesAvailable = Math.max(cell.stringStyle().charxels() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
         int startSpaces = spacesAvailable / 2;
         int endSpaces = spacesAvailable - startSpaces;
         SweetPrinterStyle cellStyle = cell.printerStyle();
@@ -246,11 +244,10 @@ public class SweetDesigner {
         int numberColumnsMatrix = 0;
         for (SweetCell cell : row) {
             SweetRow newRow = new SweetRow();
-            List<String> wrappedText = helper.wrapText(cell.text(), cell.width(), cell.printerStyle().fontWidth());
+            List<String> wrappedText = helper.wrapText(cell.text(), cell.stringStyle().charxels(), cell.printerStyle().fontWidth());
             for (String text : wrappedText) {
                 newRow.add(new SweetCell(
                     text,
-                    cell.width(),
                     new SweetPrinterStyle(cell.printerStyle()),
                     new SweetStringStyle(cell.stringStyle())
                 ));
@@ -267,7 +264,6 @@ public class SweetDesigner {
                         SweetCell firstCell = currentRow.get(0);
                         newRow.add(new SweetCell(
                             "",
-                            firstCell.width(),
                             new SweetPrinterStyle(firstCell.printerStyle()),
                             new SweetStringStyle(firstCell.stringStyle()))
                         );

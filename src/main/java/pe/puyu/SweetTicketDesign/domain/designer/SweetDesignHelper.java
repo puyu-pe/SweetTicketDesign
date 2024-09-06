@@ -79,6 +79,7 @@ public class SweetDesignHelper {
             align = findByClassName.map(SweetStyleComponent::align).orElse(align);
             normalize = findByClassName.map(SweetStyleComponent::normalize).orElse(normalize);
         }
+        charxels = Math.max(Math.min(charxels, _properties.blockWidth()), 0); // normalize charxels
         return new SweetStringStyle(charxels, pad, align, normalize);
     }
 
@@ -200,7 +201,6 @@ public class SweetDesignHelper {
                 .replaceAll("[^\\p{ASCII}]", "");
             return new SweetCell(
                 textNormalized,
-                cell.width(),
                 new SweetPrinterStyle(cell.printerStyle()),
                 new SweetStringStyle(cell.stringStyle())
             );

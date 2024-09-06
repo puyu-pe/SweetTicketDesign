@@ -83,13 +83,11 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 null,
                 null,
                 null,
-                null,
                 rows
             );
         } else if (element.isJsonObject()) {
             GsonObject blockElement = new GsonObject(element.getAsJsonObject());
             return new SweetBlockComponent(
-                blockElement.getInt("gap"),
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
                 blockElement.getString("imgPath"),

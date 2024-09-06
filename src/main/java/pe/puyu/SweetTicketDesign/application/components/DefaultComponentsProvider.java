@@ -41,7 +41,7 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             false,
             ' ',
             SweetJustify.LEFT,
-            2,
+            0,
             SweetScale.SMOOTH,
             290,
             290
@@ -51,7 +51,6 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
     @Override
     public @NotNull SweetBlockComponent getBlockComponent() {
         return new SweetBlockComponent(
-            1,
             ' ',
             null,
             null,

@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public record SweetBlockComponent(
-    @Nullable Integer gap,
     @Nullable Character separator,
     @Nullable SweetQrComponent qr,
     @Nullable String imgPath,

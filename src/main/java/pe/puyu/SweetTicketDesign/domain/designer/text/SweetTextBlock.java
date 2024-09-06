@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public record SweetTextBlock(
-    @NotNull Integer gap,
     @NotNull Character separator,
     @NotNull Map<@Nullable String, @Nullable SweetStyleComponent> styles,
     @NotNull List<@Nullable List<@Nullable SweetCellComponent>> rows
