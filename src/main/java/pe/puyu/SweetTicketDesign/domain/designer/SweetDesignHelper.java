@@ -3,7 +3,6 @@ package pe.puyu.SweetTicketDesign.domain.designer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageInfo;
-import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrInfo;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.text.SweetCell;
 import pe.puyu.SweetTicketDesign.domain.designer.text.SweetStringStyle;
@@ -15,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class SweetDesignHelper {
@@ -33,44 +33,38 @@ public class SweetDesignHelper {
         this._styles = styles;
     }
 
-    public @NotNull SweetPrinterStyle makePrinterStyleFor(@NotNull String className, @NotNull Integer index) {
+    public @NotNull SweetPrinterStyle makePrinterStyleFor(@NotNull String className) {
         int fontWidth = Optional.ofNullable(_defaultStyle.fontWidth()).orElse(1);
         int fontHeight = Optional.ofNullable(_defaultStyle.fontHeight()).orElse(1);
         boolean bold = Optional.ofNullable(_defaultStyle.bold()).orElse(false);
         boolean bgInverted = Optional.ofNullable(_defaultStyle.bgInverted()).orElse(false);
-        String charCode = _properties.charCode();
-        String indexStr = String.valueOf(index);
-        Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(_styles.get(className));
-        Optional<SweetStyleComponent> findByIndex = Optional.ofNullable(_styles.get(indexStr));
-        fontWidth = findByIndex.map(SweetStyleComponent::fontWidth).orElse(fontWidth);
-        fontHeight = findByIndex.map(SweetStyleComponent::fontHeight).orElse(fontHeight);
-        bold = findByIndex.map(SweetStyleComponent::bold).orElse(bold);
-        bgInverted = findByIndex.map(SweetStyleComponent::bgInverted).orElse(bgInverted);
-        fontWidth = findByClassName.map(SweetStyleComponent::fontWidth).orElse(fontWidth);
-        fontHeight = findByClassName.map(SweetStyleComponent::fontHeight).orElse(fontHeight);
-        bold = findByClassName.map(SweetStyleComponent::bold).orElse(bold);
-        bgInverted = findByClassName.map(SweetStyleComponent::bgInverted).orElse(bgInverted);
+        String charCode = Optional.ofNullable(_defaultStyle.charCode()).orElse("WPC1252");
+        fontWidth = findStylePropertyByClass(className, fontWidth, SweetStyleComponent::fontWidth);
+        fontHeight = findStylePropertyByClass(className, fontHeight, SweetStyleComponent::fontHeight);
+        bold = findStylePropertyByClass(className, bold, SweetStyleComponent::bold);
+        bgInverted = findStylePropertyByClass(className, bgInverted, SweetStyleComponent::bgInverted);
+        charCode = findStylePropertyByClass(className, charCode, SweetStyleComponent::charCode);
         return new SweetPrinterStyle(fontWidth, fontHeight, bold, bgInverted, charCode);
     }
 
-    public @NotNull SweetStringStyle makeSweetStringStyleFor(@NotNull String className, @NotNull Integer index) {
+    public @NotNull SweetStringStyle makeSweetStringStyleFor(@NotNull String className) {
         int charxels = Optional.ofNullable(_defaultStyle.charxels()).orElse(1);
         char pad = Optional.ofNullable(_defaultStyle.pad()).orElse(' ');
         SweetJustify align = Optional.ofNullable(_defaultStyle.align()).orElse(SweetJustify.LEFT);
-        boolean normalize = _properties.normalize();
-        String indexStr = String.valueOf(index);
-        Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(_styles.get(className));
-        Optional<SweetStyleComponent> findByIndex = Optional.ofNullable(_styles.get(indexStr));
-        charxels = findByIndex.map(SweetStyleComponent::charxels).orElse(charxels);
-        pad = findByIndex.map(SweetStyleComponent::pad).orElse(pad);
-        align = findByIndex.map(SweetStyleComponent::align).orElse(align);
-        normalize = findByIndex.map(SweetStyleComponent::normalize).orElse(normalize);
-        charxels = findByClassName.map(SweetStyleComponent::charxels).orElse(charxels);
-        pad = findByClassName.map(SweetStyleComponent::pad).orElse(pad);
-        align = findByClassName.map(SweetStyleComponent::align).orElse(align);
-        normalize = findByClassName.map(SweetStyleComponent::normalize).orElse(normalize);
+        boolean normalize = Optional.ofNullable(_defaultStyle.normalize()).orElse(false);
+        charxels = findStylePropertyByClass(className, charxels, SweetStyleComponent::charxels);
+        pad = findStylePropertyByClass(className, pad, SweetStyleComponent::pad);
+        align = findStylePropertyByClass(className, align, SweetStyleComponent::align);
+        normalize = findStylePropertyByClass(className, normalize, SweetStyleComponent::normalize);
         charxels = Math.max(Math.min(charxels, _properties.blockWidth()), 0); // normalize charxels
         return new SweetStringStyle(charxels, pad, align, normalize);
+    }
+
+    public @NotNull <U> U findStylePropertyByClass(String className, U defaultValue, Function<? super SweetStyleComponent, U> mapper) {
+        Optional<SweetStyleComponent> findByComodin = Optional.ofNullable(_styles.get("*"));
+        Optional<SweetStyleComponent> findByClassName = Optional.ofNullable(_styles.get(className));
+        U value = findByComodin.map(mapper).orElse(defaultValue);
+        return findByClassName.map(mapper).orElse(value);
     }
 
     public @NotNull SweetImageInfo makeImageInfo() {

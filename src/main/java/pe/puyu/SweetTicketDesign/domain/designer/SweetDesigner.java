@@ -56,14 +56,8 @@ public class SweetDesigner {
         SweetPropertiesComponent defaultProperties = defaultProvider.getPropertiesComponent();
         propertiesComponent = Optional.ofNullable(propertiesComponent).orElse(defaultProperties);
         int blockWidth = Optional.ofNullable(propertiesComponent.blockWidth()).or(() -> Optional.ofNullable(defaultProperties.blockWidth())).orElse(0);
-        String charCode = Optional.ofNullable(propertiesComponent.charCode()).or(() -> Optional.ofNullable(defaultProperties.charCode())).orElse("");
-        boolean normalize = Optional
-            .ofNullable(propertiesComponent.normalize())
-            .or(() -> Optional.ofNullable(defaultProperties.normalize()))
-            .or(() -> Optional.ofNullable(defaultProvider.getStyleComponent().normalize()))
-            .orElse(false);
         SweetProperties.CutProperty cut = makeCutProperty(propertiesComponent, defaultProperties);
-        SweetProperties properties = new SweetProperties(Math.max(blockWidth, 0), normalize, charCode, cut);
+        SweetProperties properties = new SweetProperties(Math.max(blockWidth, 0), cut);
         Map<String, SweetStyleComponent> styles = Optional.ofNullable(stylesMap).orElse(defaultProvider.getStyles());
         return new SweetDesignHelper(properties, defaultProvider.getStyleComponent(), styles);
     }
@@ -132,8 +126,8 @@ public class SweetDesigner {
                     SweetCellComponent cellDto = Optional.ofNullable(cellRow.get(i)).orElse(defaultCell);
                     String text = Optional.ofNullable(cellDto.text()).or(() -> Optional.ofNullable(defaultCell.text())).orElse("");
                     String className = Optional.ofNullable(cellDto.className()).or(() -> Optional.ofNullable(defaultCell.className())).orElse("");
-                    SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className, i);
-                    SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className, i);
+                    SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className);
+                    SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className);
                     row.add(new SweetCell(text, sweetPrinterStyle, stringStyle));
                 }
                 SweetRow printRow = new SweetRow();

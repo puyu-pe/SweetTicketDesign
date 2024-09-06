@@ -49,8 +49,6 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             GsonObject propertiesElement = new GsonObject(printerObject.get("properties").getAsJsonObject());
             return new SweetPropertiesComponent(
                 propertiesElement.getInt("blockWidth"),
-                propertiesElement.getBoolean("normalize"),
-                propertiesElement.getString("charCode"),
                 buildPrinterCutModeProperty(propertiesElement.getElement("cut"))
             );
         }
@@ -121,7 +119,8 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 styleElement.getInt("charxels"),
                 SweetScale.fromValueNullable(styleElement.getString("scale")),
                 styleElement.getInt("width"),
-                styleElement.getInt("height")
+                styleElement.getInt("height"),
+                styleElement.getString("charCode")
             );
         }
         return null;

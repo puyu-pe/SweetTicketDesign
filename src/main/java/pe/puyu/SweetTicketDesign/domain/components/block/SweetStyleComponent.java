@@ -13,7 +13,8 @@ public record SweetStyleComponent(
     @Nullable Integer charxels,
     @Nullable SweetScale scale,
     @Nullable Integer width,
-    @Nullable Integer height
+    @Nullable Integer height,
+    @Nullable String charCode
 ) {
 
 }
