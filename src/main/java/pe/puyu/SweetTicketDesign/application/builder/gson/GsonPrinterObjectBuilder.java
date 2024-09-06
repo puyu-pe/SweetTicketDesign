@@ -79,6 +79,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             List<List<SweetCellComponent>> rows = new LinkedList<>();
             rows.add(row);
             return new SweetBlockComponent(
+                SweetBlockType.TEXT,
                 null,
                 null,
                 null,
@@ -88,6 +89,7 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
         } else if (element.isJsonObject()) {
             GsonObject blockElement = new GsonObject(element.getAsJsonObject());
             return new SweetBlockComponent(
+                SweetBlockType.fromValueNullable(blockElement.getString("type")),
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
                 blockElement.getString("imgPath"),

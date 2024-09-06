@@ -3,6 +3,7 @@ package pe.puyu.SweetTicketDesign.domain.designer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pe.puyu.SweetTicketDesign.domain.builder.SweetPrinterObjectBuilder;
+import pe.puyu.SweetTicketDesign.domain.components.block.SweetBlockType;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageBlock;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageHelper;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageInfo;
@@ -80,31 +81,42 @@ public class SweetDesigner {
 
     private void printBlock(@Nullable SweetBlockComponent block, @NotNull SweetDesignHelper helper) {
         if (block == null) return;
-        if (block.imgPath() != null && !block.imgPath().isBlank()) {
-            String imgPath = block.imgPath();
-            SweetImageInfo imageInfo = helper.makeImageInfo(block.styles());
-            SweetImageBlock imgBlock = new SweetImageBlock(imgPath, helper.calcWidthPaperInPx(), imageInfo);
-            printImg(imgBlock);
-        } else if (block.qr() != null) {
-            SweetQrInfo qrInfo = helper.makeQrInfo(block.qr(), defaultProvider.getQrComponent());
-            SweetQrStyle qrStyle = helper.makeQrStyles(block.styles());
-            SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
-            printQr(qrBlock);
-        } else {
-            SweetTextBlock textBlock = makeTextBlock(block);
-            SweetTable table = makeSweetTable(textBlock, helper);
-            table = phase0CalcAutoCharxels(table, helper);
-            table = phase1ConsiderGapSpaces(table);
-            table = phase2WrapRows(table, helper);
-            phase3PrintRow(table, helper);
+        SweetBlockType type = Optional.ofNullable(block.type()).orElse(defaultProvider.getBlockType());
+        switch (type) {
+            case IMG:
+                String imagePath = Optional.ofNullable(block.imgPath()).orElse(defaultProvider.getImagePath());
+                if (!imagePath.isBlank()) {
+                    SweetImageInfo imageInfo = helper.makeImageInfo(Optional.ofNullable(block.styles()).orElse(defaultProvider.getStyles()));
+                    SweetImageBlock imgBlock = new SweetImageBlock(imagePath, helper.calcWidthPaperInPx(), imageInfo);
+                    printImg(imgBlock);
+                }
+                break;
+            case QR:
+                if (block.qr() != null) {
+                    SweetQrInfo qrInfo = new SweetQrInfo(
+                        Optional.ofNullable(block.qr().data()).orElse(defaultProvider.getStringQr()),
+                        Optional.ofNullable(block.qr().qrType()).orElse(defaultProvider.getQrType()),
+                        Optional.ofNullable(block.qr().correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
+                    );
+                    SweetQrStyle qrStyle = helper.makeQrStyles(Optional.ofNullable(block.styles()).orElse(defaultProvider.getStyles()));
+                    SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
+                    printQr(qrBlock);
+                }
+                break;
+            default: // TEXT
+                SweetTextBlock textBlock = makeTextBlock(block);
+                SweetTable table = makeSweetTable(textBlock, helper);
+                table = phase0CalcAutoCharxels(table, helper);
+                table = phase1ConsiderGapSpaces(table);
+                table = phase2WrapRows(table, helper);
+                phase3PrintRow(table, helper);
         }
     }
 
     private @NotNull SweetTextBlock makeTextBlock(@NotNull SweetBlockComponent block) {
-        SweetBlockComponent defaultBlock = defaultProvider.getBlockComponent();
-        char separator = Optional.ofNullable(block.separator()).or(() -> Optional.ofNullable(defaultBlock.separator())).orElse(' ');
+        char separator = Optional.ofNullable(block.separator()).orElse(defaultProvider.getSeparator());
         var rows = Optional.ofNullable(block.rows()).orElse(new LinkedList<>());
-        var styles = Optional.ofNullable(block.styles()).orElse(new HashMap<>());
+        var styles = Optional.ofNullable(block.styles()).orElse(defaultProvider.getStyles());
         return new SweetTextBlock(separator, styles, rows);
     }
 
