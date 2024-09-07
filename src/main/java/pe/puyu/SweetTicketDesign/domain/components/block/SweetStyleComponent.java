@@ -10,10 +10,11 @@ public record SweetStyleComponent(
     @Nullable Boolean bgInverted,
     @Nullable Character pad,
     @Nullable SweetJustify align,
-    @Nullable Integer span,
+    @Nullable Integer charxels,
     @Nullable SweetScale scale,
     @Nullable Integer width,
-    @Nullable Integer height
+    @Nullable Integer height,
+    @Nullable String charCode
 ) {
 
 }

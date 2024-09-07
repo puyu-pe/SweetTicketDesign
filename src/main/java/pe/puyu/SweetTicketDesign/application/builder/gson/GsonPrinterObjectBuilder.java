@@ -38,7 +38,8 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             SweetPropertiesComponent properties = buildPropertiesComponent();
             List<SweetBlockComponent> blocks = buildBlockComponent();
             SweetOpenDrawerComponent openDrawer = buildOpenDrawerComponent();
-            return new SweetPrinterObjectComponent(properties, blocks, openDrawer);
+            Map<String, SweetStyleComponent> styles = buildStylesComponent();
+            return new SweetPrinterObjectComponent(properties, blocks, openDrawer, styles);
         } catch (Exception e) {
             throw new DesignObjectBuilderException(String.format("GsonPrinterObjectBuilder throw an exception: %s", e.getMessage()), e);
         }
@@ -49,8 +50,6 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             GsonObject propertiesElement = new GsonObject(printerObject.get("properties").getAsJsonObject());
             return new SweetPropertiesComponent(
                 propertiesElement.getInt("blockWidth"),
-                propertiesElement.getBoolean("normalize"),
-                propertiesElement.getString("charCode"),
                 buildPrinterCutModeProperty(propertiesElement.getElement("cut"))
             );
         }
@@ -79,33 +78,29 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
             List<List<SweetCellComponent>> rows = new LinkedList<>();
             rows.add(row);
             return new SweetBlockComponent(
+                SweetBlockType.TEXT,
                 null,
                 null,
-                null,
-                null,
-                1,
                 null,
                 rows
             );
         } else if (element.isJsonObject()) {
             GsonObject blockElement = new GsonObject(element.getAsJsonObject());
             return new SweetBlockComponent(
-                blockElement.getInt("gap"),
+                SweetBlockType.fromValueNullable(blockElement.getString("type")),
                 blockElement.getCharacter("separator"),
                 buildQrComponent(blockElement.getElement("qr")),
-                blockElement.getString("imgPath"),
-                blockElement.getInt("nColumns"),
-                buildStyleComponent(blockElement.getElement("styles")),
+                buildImageComponent(blockElement.getElement("img")),
                 buildRows(blockElement.getElement("rows"))
             );
         }
         return null;
     }
 
-    private @Nullable Map<String, SweetStyleComponent> buildStyleComponent(@Nullable JsonElement styleElement) {
-        if (styleElement != null && styleElement.isJsonObject()) {
+    private @Nullable Map<String, SweetStyleComponent> buildStylesComponent() {
+        if (printerObject.has("styles") && printerObject.get("styles").isJsonObject()) {
             Map<String, SweetStyleComponent> styles = new HashMap<>();
-            styleElement.getAsJsonObject().asMap().forEach((key, element) -> styles.put(key, toStyleComponent(element)));
+            printerObject.getAsJsonObject("styles").asMap().forEach((key, element) -> styles.put(key, toStyleComponent(element)));
             return styles;
         }
         return null;
@@ -122,10 +117,11 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
                 styleElement.getBoolean("bgInverted"),
                 styleElement.getCharacter("pad"),
                 SweetJustify.fromValueNullable(styleElement.getString("align")),
-                styleElement.getInt("span"),
+                styleElement.getInt("charxels"),
                 SweetScale.fromValueNullable(styleElement.getString("scale")),
                 styleElement.getInt("width"),
-                styleElement.getInt("height")
+                styleElement.getInt("height"),
+                styleElement.getString("charCode")
             );
         }
         return null;
@@ -186,13 +182,31 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
         }
         if (element.isJsonPrimitive()) {
             String data = element.getAsString();
-            return new SweetQrComponent(data, null, null);
+            return new SweetQrComponent(data, "", null, null);
         } else if (element.isJsonObject()) {
             GsonObject qrElement = new GsonObject(element.getAsJsonObject());
             return new SweetQrComponent(
                 qrElement.getString("data"),
+                qrElement.getString("class"),
                 SweetQrType.fromValue(qrElement.getString("type")),
                 SweetQrCorrectionLevel.fromValue(qrElement.getString("correctionLevel"))
+            );
+        }
+        return null;
+    }
+
+    public @Nullable SweetImageComponent buildImageComponent(@Nullable JsonElement element) {
+        if (element == null) {
+            return null;
+        }
+        if (element.isJsonPrimitive()) {
+            String path = element.getAsString();
+            return new SweetImageComponent(path, "");
+        } else if (element.isJsonObject()) {
+            GsonObject qrElement = new GsonObject(element.getAsJsonObject());
+            return new SweetImageComponent(
+                qrElement.getString("path"),
+                qrElement.getString("class")
             );
         }
         return null;

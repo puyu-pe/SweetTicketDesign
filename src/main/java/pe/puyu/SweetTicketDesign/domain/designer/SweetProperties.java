@@ -5,8 +5,6 @@ import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutMode;
 
 public record SweetProperties(
     @NotNull Integer blockWidth,
-    @NotNull Boolean normalize,
-    @NotNull String charCode,
     @NotNull CutProperty cutProperty
 ) {
 

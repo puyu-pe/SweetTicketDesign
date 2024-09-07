@@ -9,24 +9,17 @@ import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutComponent;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetPropertiesComponent;
 import pe.puyu.SweetTicketDesign.domain.components.SweetDefaultComponentsProvider;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class DefaultComponentsProvider implements SweetDefaultComponentsProvider {
-
-    @Override
-    public @NotNull SweetCellComponent getCellComponent() {
-        return new SweetCellComponent("", "");
-    }
 
     @Override
     public @NotNull SweetPropertiesComponent getPropertiesComponent() {
         int charactersWidth = 42; // 42 characters equals 72 mm approx.
         return new SweetPropertiesComponent(
             charactersWidth,
-            false,
-            "WPC1252",
             new SweetCutComponent(4, SweetCutMode.PART)
         );
     }
@@ -41,24 +34,37 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
             false,
             ' ',
             SweetJustify.LEFT,
-            2,
+            0,
             SweetScale.SMOOTH,
             290,
-            290
+            290,
+            "WPC1252"
         );
     }
 
     @Override
-    public @NotNull SweetBlockComponent getBlockComponent() {
-        return new SweetBlockComponent(
-            1,
-            ' ',
-            null,
-            null,
-            6,
-            new HashMap<>(),
-            new LinkedList<>()
-        );
+    public @NotNull Character getSeparator() {
+        return ' ';
+    }
+
+    @Override
+    public @NotNull String getStringQr() {
+        return "";
+    }
+
+    @Override
+    public @NotNull SweetQrType getQrType() {
+        return SweetQrType.IMG;
+    }
+
+    @Override
+    public @NotNull SweetQrCorrectionLevel getQrCorrectionLevel() {
+        return SweetQrCorrectionLevel.Q;
+    }
+
+    @Override
+    public @NotNull String getImagePath() {
+        return "";
     }
 
     @Override
@@ -72,11 +78,12 @@ public class DefaultComponentsProvider implements SweetDefaultComponentsProvider
     }
 
     @Override
-    public @NotNull SweetQrComponent getQrComponent() {
-        return new SweetQrComponent(
-            null,
-            SweetQrType.IMG,
-            SweetQrCorrectionLevel.Q
-        );
+    public @NotNull SweetBlockType getBlockType() {
+        return SweetBlockType.TEXT;
+    }
+
+    @Override
+    public @NotNull Map<String, SweetStyleComponent> getStyles() {
+        return Map.of();
     }
 }

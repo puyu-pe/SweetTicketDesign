@@ -3,24 +3,23 @@ package pe.puyu.SweetTicketDesign.domain.designer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pe.puyu.SweetTicketDesign.domain.builder.SweetPrinterObjectBuilder;
+import pe.puyu.SweetTicketDesign.domain.components.block.*;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageBlock;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageHelper;
 import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageInfo;
+import pe.puyu.SweetTicketDesign.domain.designer.img.SweetImageStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrBlock;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrHelper;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrInfo;
 import pe.puyu.SweetTicketDesign.domain.designer.qr.SweetQrStyle;
 import pe.puyu.SweetTicketDesign.domain.designer.text.*;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetBlockComponent;
 import pe.puyu.SweetTicketDesign.domain.components.SweetPrinterObjectComponent;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetQrType;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutMode;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutComponent;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetPropertiesComponent;
 import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetOpenDrawerComponent;
 import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetPinConnector;
 import pe.puyu.SweetTicketDesign.domain.components.SweetDefaultComponentsProvider;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetCellComponent;
 import pe.puyu.SweetTicketDesign.domain.printer.*;
 
 import java.awt.image.BufferedImage;
@@ -46,24 +45,22 @@ public class SweetDesigner {
         List<SweetBlockComponent> blocks = Optional
             .ofNullable(designObject.blocks())
             .orElse(defaultProvider.getDataComponent());
-        SweetDesignHelper helper = makeSweetHelper(designObject.properties());
+        SweetDesignHelper helper = makeSweetHelper(designObject.properties(), designObject.styles());
         blocks.forEach(block -> printBlock(block, helper));
         openDrawerOrCut(designObject.openDrawer(), helper);
     }
 
-    private @NotNull SweetDesignHelper makeSweetHelper(@Nullable SweetPropertiesComponent propertiesComponent) {
+    private @NotNull SweetDesignHelper makeSweetHelper(
+        @Nullable SweetPropertiesComponent propertiesComponent,
+        @Nullable Map<String, @Nullable SweetStyleComponent> stylesMap
+    ) {
         SweetPropertiesComponent defaultProperties = defaultProvider.getPropertiesComponent();
         propertiesComponent = Optional.ofNullable(propertiesComponent).orElse(defaultProperties);
         int blockWidth = Optional.ofNullable(propertiesComponent.blockWidth()).or(() -> Optional.ofNullable(defaultProperties.blockWidth())).orElse(0);
-        String charCode = Optional.ofNullable(propertiesComponent.charCode()).or(() -> Optional.ofNullable(defaultProperties.charCode())).orElse("");
-        boolean normalize = Optional
-            .ofNullable(propertiesComponent.normalize())
-            .or(() -> Optional.ofNullable(defaultProperties.normalize()))
-            .or(() -> Optional.ofNullable(defaultProvider.getStyleComponent().normalize()))
-            .orElse(false);
         SweetProperties.CutProperty cut = makeCutProperty(propertiesComponent, defaultProperties);
-        SweetProperties properties = new SweetProperties(Math.max(blockWidth, 0), normalize, charCode, cut);
-        return new SweetDesignHelper(properties, defaultProvider.getStyleComponent());
+        SweetProperties properties = new SweetProperties(Math.max(blockWidth, 0), cut);
+        Map<String, SweetStyleComponent> styles = Optional.ofNullable(stylesMap).orElse(defaultProvider.getStyles());
+        return new SweetDesignHelper(properties, defaultProvider.getStyleComponent(), styles);
     }
 
     private SweetProperties.CutProperty makeCutProperty(@NotNull SweetPropertiesComponent properties, @NotNull SweetPropertiesComponent defaultProperties) {
@@ -80,50 +77,62 @@ public class SweetDesigner {
 
     private void printBlock(@Nullable SweetBlockComponent block, @NotNull SweetDesignHelper helper) {
         if (block == null) return;
-        if (block.imgPath() != null && !block.imgPath().isBlank()) {
-            String imgPath = block.imgPath();
-            SweetImageInfo imageInfo = helper.makeImageInfo(block.styles());
-            SweetImageBlock imgBlock = new SweetImageBlock(imgPath, helper.calcWidthPaperInPx(), imageInfo);
-            printImg(imgBlock);
-        } else if (block.qr() != null) {
-            SweetQrInfo qrInfo = helper.makeQrInfo(block.qr(), defaultProvider.getQrComponent());
-            SweetQrStyle qrStyle = helper.makeQrStyles(block.styles());
-            SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
-            printQr(qrBlock);
-        } else {
-            SweetTextBlock textBlock = makeTextBlock(block);
-            SweetTable table = makeSweetTable(textBlock, helper);
-            table = phase1CalcWidthAndNormalizeSpan(table, helper);
-            table = phase2WrapRows(table, helper);
-            phase3PrintRow(table, helper);
+        SweetBlockType type = Optional.ofNullable(block.type()).orElse(defaultProvider.getBlockType());
+        switch (type) {
+            case IMG:
+                if (block.img() != null) {
+                    SweetImageInfo imgInfo = new SweetImageInfo(
+                        Optional.ofNullable(block.img().path()).orElse(defaultProvider.getImagePath()),
+                        Optional.ofNullable(block.img().className()).orElse("")
+                    );
+                    SweetImageStyle imageStyle = helper.makeImageStyle(imgInfo.className());
+                    SweetImageBlock imgBlock = new SweetImageBlock(imgInfo, helper.calcWidthPaperInPx(), imageStyle);
+                    printImg(imgBlock);
+                }
+                break;
+            case QR:
+                if (block.qr() != null) {
+                    SweetQrInfo qrInfo = new SweetQrInfo(
+                        Optional.ofNullable(block.qr().data()).orElse(defaultProvider.getStringQr()),
+                        Optional.ofNullable(block.qr().className()).orElse(""),
+                        Optional.ofNullable(block.qr().qrType()).orElse(defaultProvider.getQrType()),
+                        Optional.ofNullable(block.qr().correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
+                    );
+                    SweetQrStyle qrStyle = helper.makeQrStyle(qrInfo.className());
+                    SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
+                    printQr(qrBlock);
+                }
+                break;
+            default: // TEXT
+                SweetTextBlock textBlock = makeTextBlock(block);
+                SweetTable table = makeSweetTable(textBlock, helper);
+                table = phase0CalcAutoCharxels(table, helper);
+                table = phase1ConsiderGapSpaces(table);
+                table = phase2WrapRows(table, helper);
+                phase3PrintRow(table, helper);
         }
     }
 
     private @NotNull SweetTextBlock makeTextBlock(@NotNull SweetBlockComponent block) {
-        SweetBlockComponent defaultBlock = defaultProvider.getBlockComponent();
-        int gap = Math.max(Optional.ofNullable(block.gap()).or(() -> Optional.ofNullable(defaultBlock.gap())).orElse(1), 1);
-        char separator = Optional.ofNullable(block.separator()).or(() -> Optional.ofNullable(defaultBlock.separator())).orElse(' ');
-        int nColumns = Math.max(Optional.ofNullable(block.nColumns()).or(() -> Optional.ofNullable(defaultBlock.nColumns())).orElse(0), 0);
+        char separator = Optional.ofNullable(block.separator()).orElse(defaultProvider.getSeparator());
         var rows = Optional.ofNullable(block.rows()).orElse(new LinkedList<>());
-        var styles = Optional.ofNullable(block.styles()).orElse(new HashMap<>());
-        return new SweetTextBlock(gap, separator, nColumns, styles, rows);
+        return new SweetTextBlock(separator, rows);
     }
 
     private @NotNull SweetTable makeSweetTable(@NotNull SweetTextBlock block, @NotNull SweetDesignHelper helper) {
-        SweetTableInfo tableInfo = new SweetTableInfo(block.gap(), block.separator(), Math.max(block.nColumns(), 0));
+        SweetTableInfo tableInfo = new SweetTableInfo(block.separator());
         SweetTable table = new SweetTable(tableInfo);
         List<SweetRow> printRows = block.rows().stream()
             .map(rowDto -> {
                 List<SweetCellComponent> cellRow = Optional.ofNullable(rowDto).orElse(new LinkedList<>());
                 List<SweetCell> row = new LinkedList<>();
-                for (int i = 0; i < cellRow.size(); ++i) {
-                    SweetCellComponent defaultCell = defaultProvider.getCellComponent();
-                    SweetCellComponent cellDto = Optional.ofNullable(cellRow.get(i)).orElse(defaultCell);
-                    String text = Optional.ofNullable(cellDto.text()).or(() -> Optional.ofNullable(defaultCell.text())).orElse("");
-                    String className = Optional.ofNullable(cellDto.className()).or(() -> Optional.ofNullable(defaultCell.className())).orElse("");
-                    SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className, i, block.styles());
-                    SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className, i, block.styles());
-                    row.add(new SweetCell(text, 0, sweetPrinterStyle, stringStyle));
+                for (SweetCellComponent sweetCellComponent : cellRow) {
+                    SweetCellComponent cellDto = Optional.ofNullable(sweetCellComponent).orElse(new SweetCellComponent("", ""));
+                    String text = Optional.ofNullable(cellDto.text()).orElse("");
+                    String className = Optional.ofNullable(cellDto.className()).orElse("");
+                    SweetPrinterStyle sweetPrinterStyle = helper.makePrinterStyleFor(className);
+                    SweetStringStyle stringStyle = helper.makeSweetStringStyleFor(className);
+                    row.add(new SweetCell(text, sweetPrinterStyle, stringStyle));
                 }
                 SweetRow printRow = new SweetRow();
                 printRow.addAll(row);
@@ -134,37 +143,61 @@ public class SweetDesigner {
         return table;
     }
 
-    private @NotNull SweetTable phase1CalcWidthAndNormalizeSpan(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
+    private @NotNull SweetTable phase0CalcAutoCharxels(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTable newTable = new SweetTable(table.getInfo());
+        int blockWidth = helper.getProperties().blockWidth();
         for (SweetRow row : table) {
             SweetRow newRow = new SweetRow();
-            int remainingWidth = helper.getProperties().blockWidth();
-            int blockWidth = remainingWidth;
-            int nColumns = table.getInfo().maxNumberOfColumns();
-            int coveredColumns = 0;
-            for (int i = 0; i < row.size(); ++i) {
-                SweetCell cell = row.get(i);
-                int span = Math.min(Math.max(cell.stringStyle().span(), 0), nColumns); // normalize span in range (0, max)
-                int cellWidth = nColumns == 0 ? 0 : Math.min(span * blockWidth / nColumns, remainingWidth);
-                int coverWidthByCell = cellWidth;
-                boolean isLastItem = i + 1 >= row.size();
-                coveredColumns += span;
-                if (!isLastItem && (remainingWidth - cellWidth) > 0) { // is not the last item
-                    int gap = table.getInfo().gap();
-                    cellWidth = Math.max(cellWidth - gap, 0); // consider intermediate space
+            int countCharxelZeros = row.countElementsByCharxelZero();
+            int sumAllCharxels = row.sumAllCharxels();
+            int remainingCharxels = Math.max(0, blockWidth - sumAllCharxels);
+            int autoCharxels = countCharxelZeros <= 0 ? 0 : remainingCharxels / countCharxelZeros;
+            int autoCharxelsResidue = countCharxelZeros <= 0 ? 0 : remainingCharxels % countCharxelZeros;
+            int coveredCharxels = 0;
+            for (SweetCell cell : row) {
+                int newCharxels = cell.stringStyle().charxels();
+                SweetCell newCell;
+                if (cell.stringStyle().charxels() == 0) {
+                    newCharxels = autoCharxels;
+                    if (countCharxelZeros == 1) {
+                        newCharxels += autoCharxelsResidue;
+                    }
+                    --countCharxelZeros;
+                } else if (coveredCharxels + newCharxels >= blockWidth) {
+                    newCharxels = Math.max(0, blockWidth - coveredCharxels);
                 }
-                if (isLastItem && coveredColumns >= nColumns) {
-                    cellWidth = Math.max(remainingWidth, 0); // cover all remaining width
-                }
-                remainingWidth -= coverWidthByCell;
                 SweetStringStyle newStringStyle = new SweetStringStyle(
-                    span,
+                    newCharxels,
                     cell.stringStyle().pad(),
                     cell.stringStyle().align(),
                     cell.stringStyle().normalize()
                 );
-                SweetPrinterStyle sweetPrinterStyle = new SweetPrinterStyle(cell.printerStyle());
-                newRow.add(new SweetCell(cell.text(), cellWidth, sweetPrinterStyle, newStringStyle));
+                newCell = new SweetCell(cell.text(), new SweetPrinterStyle(cell.printerStyle()), newStringStyle);
+                newRow.add(newCell);
+                coveredCharxels += newCell.stringStyle().charxels();
+            }
+            newTable.add(newRow);
+        }
+        return newTable;
+    }
+
+    private @NotNull SweetTable phase1ConsiderGapSpaces(@NotNull SweetTable table) {
+        SweetTable newTable = new SweetTable(table.getInfo());
+        for (SweetRow row : table) {
+            SweetRow newRow = new SweetRow();
+            for (int i = 0; i < row.size(); ++i) {
+                SweetCell cell = row.get(i);
+                SweetCell newCell = new SweetCell(cell);
+                if (i < row.size() - 1) {
+                    SweetStringStyle newStringStyle = new SweetStringStyle(
+                        cell.stringStyle().charxels() - 1,
+                        cell.stringStyle().pad(),
+                        cell.stringStyle().align(),
+                        cell.stringStyle().normalize()
+                    );
+                    newCell = new SweetCell(cell.text(), new SweetPrinterStyle(cell.printerStyle()), newStringStyle);
+                }
+                newRow.add(newCell);
             }
             newTable.add(newRow);
         }
@@ -182,13 +215,12 @@ public class SweetDesigner {
     private void phase3PrintRow(@NotNull SweetTable table, @NotNull SweetDesignHelper helper) {
         SweetTableInfo tableInfo = table.getInfo();
         String separator = tableInfo.separator().toString();
-        int gap = Math.max(tableInfo.gap(), 0);
         for (SweetRow row : table) {
-            int remainingWidth = helper.getProperties().blockWidth();
             for (int i = 0; i < row.size(); ++i) {
                 SweetCell cell = row.get(i);
                 boolean isLastElement = i + 1 >= row.size();
                 cell = helper.normalize(cell);
+                printCell(cell, isLastElement);
                 if (!isLastElement) {
                     SweetPrinterStyle gapStyle = new SweetPrinterStyle(
                         1,
@@ -197,21 +229,14 @@ public class SweetDesigner {
                         cell.printerStyle().bgInverted(),
                         cell.printerStyle().charCode()
                     );
-                    printCell(cell, false);
-                    remainingWidth -= cell.width();
-                    if (remainingWidth > 0) {
-                        printer.print(separator.repeat(gap), gapStyle);
-                        remainingWidth -= gap;
-                    }
-                } else {
-                    printCell(cell, true);
+                    printer.print(separator.repeat(1), gapStyle);
                 }
             }
         }
     }
 
     private void printCell(SweetCell cell, boolean feed) {
-        int spacesAvailable = Math.max(cell.width() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
+        int spacesAvailable = Math.max(cell.stringStyle().charxels() - (cell.text().length() * cell.printerStyle().fontWidth()), 0);
         int startSpaces = spacesAvailable / 2;
         int endSpaces = spacesAvailable - startSpaces;
         SweetPrinterStyle cellStyle = cell.printerStyle();
@@ -248,11 +273,10 @@ public class SweetDesigner {
         int numberColumnsMatrix = 0;
         for (SweetCell cell : row) {
             SweetRow newRow = new SweetRow();
-            List<String> wrappedText = helper.wrapText(cell.text(), cell.width(), cell.printerStyle().fontWidth());
+            List<String> wrappedText = helper.wrapText(cell.text(), cell.stringStyle().charxels(), cell.printerStyle().fontWidth());
             for (String text : wrappedText) {
                 newRow.add(new SweetCell(
                     text,
-                    cell.width(),
                     new SweetPrinterStyle(cell.printerStyle()),
                     new SweetStringStyle(cell.stringStyle())
                 ));
@@ -269,7 +293,6 @@ public class SweetDesigner {
                         SweetCell firstCell = currentRow.get(0);
                         newRow.add(new SweetCell(
                             "",
-                            firstCell.width(),
                             new SweetPrinterStyle(firstCell.printerStyle()),
                             new SweetStringStyle(firstCell.stringStyle()))
                         );
@@ -305,9 +328,9 @@ public class SweetDesigner {
 
     private void printImg(@NotNull SweetImageBlock imageBlock) {
         try {
-            BufferedImage image = SweetImageHelper.toBufferedImage(imageBlock.imgPath());
-            BufferedImage resizedImage = SweetImageHelper.resize(image, imageBlock.imageInfo());
-            BufferedImage justifiedImage = SweetImageHelper.justify(resizedImage, imageBlock.widthInPx(), imageBlock.imageInfo());
+            BufferedImage image = SweetImageHelper.toBufferedImage(imageBlock.info().path());
+            BufferedImage resizedImage = SweetImageHelper.resize(image, imageBlock.style());
+            BufferedImage justifiedImage = SweetImageHelper.justify(resizedImage, imageBlock.widthInPx(), imageBlock.style());
             printer.printImg(justifiedImage);
         } catch (Exception ignored) {
 
@@ -320,7 +343,7 @@ public class SweetDesigner {
             SweetQrStyle style = qrBlock.style();
             if (qrInfo.qrType() == SweetQrType.IMG) {
                 BufferedImage qrImage = SweetQrHelper.generateQr(qrInfo, style.size());
-                SweetImageInfo imageInfo = new SweetImageInfo(style.scale(), style.size(), style.size(), style.align());
+                SweetImageStyle imageInfo = new SweetImageStyle(style.scale(), style.size(), style.size(), style.align());
                 BufferedImage justifiedQr = SweetImageHelper.justify(qrImage, qrBlock.widthInPx(), imageInfo);
                 printer.printImg(justifiedQr);
             } else {

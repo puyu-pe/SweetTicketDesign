@@ -1,19 +1,14 @@
 package pe.puyu.SweetTicketDesign.domain.components;
 
 import org.jetbrains.annotations.NotNull;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetBlockComponent;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetQrComponent;
+import pe.puyu.SweetTicketDesign.domain.components.block.*;
 import pe.puyu.SweetTicketDesign.domain.components.properties.SweetPropertiesComponent;
 import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetOpenDrawerComponent;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetCellComponent;
-import pe.puyu.SweetTicketDesign.domain.components.block.SweetStyleComponent;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SweetDefaultComponentsProvider {
-
-    @NotNull
-    SweetCellComponent getCellComponent();
 
     @NotNull
     SweetPropertiesComponent getPropertiesComponent();
@@ -22,7 +17,19 @@ public interface SweetDefaultComponentsProvider {
     SweetStyleComponent getStyleComponent();
 
     @NotNull
-    SweetBlockComponent getBlockComponent();
+    Character getSeparator();
+
+    @NotNull
+    String getStringQr();
+
+    @NotNull
+    SweetQrType getQrType();
+
+    @NotNull
+    SweetQrCorrectionLevel getQrCorrectionLevel();
+
+    @NotNull
+    String getImagePath();
 
     @NotNull
     SweetOpenDrawerComponent getOpenDrawerComponent();
@@ -31,5 +38,8 @@ public interface SweetDefaultComponentsProvider {
     List<SweetBlockComponent> getDataComponent();
 
     @NotNull
-    SweetQrComponent getQrComponent();
+    SweetBlockType getBlockType();
+
+    @NotNull
+    Map<String, SweetStyleComponent> getStyles();
 }

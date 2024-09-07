@@ -33,6 +33,23 @@ public class SweetRow implements Iterable<SweetCell> {
         _row.addAll(cells);
     }
 
+    public int countElementsByCharxelZero() {
+        int count = 0;
+        for (SweetCell cell : _row) {
+            if (cell.stringStyle().charxels() == 0)
+                ++count;
+        }
+        return count;
+    }
+
+    public int sumAllCharxels() {
+        int sum = 0;
+        for (SweetCell cell : _row) {
+            sum += cell.stringStyle().charxels();
+        }
+        return sum;
+    }
+
     @NotNull
     @Override
     public Iterator<SweetCell> iterator() {
@@ -48,4 +65,5 @@ public class SweetRow implements Iterable<SweetCell> {
     public Spliterator<SweetCell> spliterator() {
         return Iterable.super.spliterator();
     }
+
 }
