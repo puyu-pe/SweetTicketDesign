@@ -80,28 +80,20 @@ public class SweetDesigner {
         SweetBlockType type = Optional.ofNullable(block.type()).orElse(defaultProvider.getBlockType());
         switch (type) {
             case IMG:
-                if (block.img() != null) {
-                    SweetImageInfo imgInfo = new SweetImageInfo(
-                        Optional.ofNullable(block.img().path()).orElse(defaultProvider.getImagePath()),
-                        Optional.ofNullable(block.img().className()).orElse("")
-                    );
-                    SweetImageStyle imageStyle = helper.makeImageStyle(imgInfo.className());
-                    SweetImageBlock imgBlock = new SweetImageBlock(imgInfo, helper.calcWidthPaperInPx(), imageStyle);
-                    printImg(imgBlock);
-                }
+                SweetImageComponent imgComponent = Optional.ofNullable(block.img()).orElse(new SweetImageComponent(null, null));
+                SweetImageInfo imgInfo = new SweetImageInfo(
+                    Optional.ofNullable(imgComponent.path()).orElse(defaultProvider.getImagePath()),
+                    Optional.ofNullable(imgComponent.className()).orElse("")
+                );
+                SweetImageStyle imageStyle = helper.makeImageStyle(imgInfo.className());
+                SweetImageBlock imgBlock = new SweetImageBlock(imgInfo, helper.calcWidthPaperInPx(), imageStyle);
+                printImg(imgBlock);
                 break;
             case QR:
-                if (block.qr() != null) {
-                    SweetQrInfo qrInfo = new SweetQrInfo(
-                        Optional.ofNullable(block.qr().data()).orElse(defaultProvider.getStringQr()),
-                        Optional.ofNullable(block.qr().className()).orElse(""),
-                        Optional.ofNullable(block.qr().qrType()).orElse(defaultProvider.getQrType()),
-                        Optional.ofNullable(block.qr().correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
-                    );
-                    SweetQrStyle qrStyle = helper.makeQrStyle(qrInfo.className());
-                    SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
-                    printQr(qrBlock);
-                }
+                SweetQrInfo qrInfo = getSweetQrInfo(block);
+                SweetQrStyle qrStyle = helper.makeQrStyle(qrInfo.className());
+                SweetQrBlock qrBlock = new SweetQrBlock(helper.calcWidthPaperInPx(), qrInfo, qrStyle);
+                printQr(qrBlock);
                 break;
             default: // TEXT
                 SweetTextBlock textBlock = makeTextBlock(block);
@@ -111,6 +103,16 @@ public class SweetDesigner {
                 table = phase2WrapRows(table, helper);
                 phase3PrintRow(table, helper);
         }
+    }
+
+    private @NotNull SweetQrInfo getSweetQrInfo(@NotNull SweetBlockComponent block) {
+        SweetQrComponent qrComponent = Optional.ofNullable(block.qr()).orElse(new SweetQrComponent(null, null, null, null));
+        return new SweetQrInfo(
+            Optional.ofNullable(qrComponent.data()).orElse(defaultProvider.getStringQr()),
+            Optional.ofNullable(qrComponent.className()).orElse(""),
+            Optional.ofNullable(qrComponent.qrType()).orElse(defaultProvider.getQrType()),
+            Optional.ofNullable(qrComponent.correctionLevel()).orElse(defaultProvider.getQrCorrectionLevel())
+        );
     }
 
     private @NotNull SweetTextBlock makeTextBlock(@NotNull SweetBlockComponent block) {
