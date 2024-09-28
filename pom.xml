@@ -5,10 +5,10 @@
 
     <groupId>pe.puyu</groupId>
     <artifactId>SweetTicketDesign</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>SweetTicketDesign</name>
     <description>Library for creating print layouts for printers</description>
-    <url>https://github.com/puyu-pe/SweetTicketDesign</url>
+    <url>https://github.coggm/puyu-pe/SweetTicketDesign</url>
 
     <licenses>
         <license>

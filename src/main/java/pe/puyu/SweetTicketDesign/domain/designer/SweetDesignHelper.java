@@ -117,7 +117,7 @@ public class SweetDesignHelper {
             int midCharacterCovered = 0;
             while ((newString.length() * fontWidth) + numberCharactersCoveredByCurrentWord + midCharacterCovered <= numberOfCharactersAvailable) {
                 newString.append(newString.isEmpty() ? currentWord : space + currentWord);
-                midCharacterCovered = 1;
+                midCharacterCovered += 1;
                 ++i;
                 if (i >= words.size())
                     break;
