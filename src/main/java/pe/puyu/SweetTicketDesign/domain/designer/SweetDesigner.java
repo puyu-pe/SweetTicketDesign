@@ -325,7 +325,7 @@ public class SweetDesigner {
             t1 = Optional.ofNullable(openDrawer.t1()).orElse(t1);
             t2 = Optional.ofNullable(openDrawer.t2()).orElse(t2);
             printer.openDrawerWithCut(new SweetDrawerOptions(pin, t1, t2), cutOptions);
-        } else if(dataIsEmpty){
+        } else {
             printer.cut(cutOptions);
         }
     }
