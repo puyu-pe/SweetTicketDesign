@@ -47,8 +47,7 @@ public class SweetDesigner {
             .orElse(defaultProvider.getDataComponent());
         SweetDesignHelper helper = makeSweetHelper(designObject.properties(), designObject.styles());
         blocks.forEach(block -> printBlock(block, helper));
-        boolean onlyOpenDrawer = !blocks.isEmpty();
-        openDrawerOrCut(designObject.openDrawer(), helper, onlyOpenDrawer);
+        openDrawerOrCut(designObject.openDrawer(), helper, blocks.isEmpty());
     }
 
     private @NotNull SweetDesignHelper makeSweetHelper(
@@ -310,10 +309,10 @@ public class SweetDesigner {
         return wrappedRow;
     }
 
-    private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper, boolean onlyOpenDrawer) {
+    private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper, boolean dataIsEmpty) {
         SweetProperties.CutProperty cutProperty = helper.getProperties().cutProperty();
-        int feed = onlyOpenDrawer ? cutProperty.feed() : 0;
-        SweetCutMode mode = onlyOpenDrawer ? cutProperty.mode() : SweetCutMode.FULL;
+        int feed = dataIsEmpty ? 0 : cutProperty.feed();
+        SweetCutMode mode = dataIsEmpty ? SweetCutMode.FULL : cutProperty.mode();
         SweetCutOptions cutOptions = new SweetCutOptions(feed, mode);
         if (openDrawer != null) {
             SweetPinConnector pin = SweetPinConnector.Pin_2;
@@ -326,7 +325,7 @@ public class SweetDesigner {
             t1 = Optional.ofNullable(openDrawer.t1()).orElse(t1);
             t2 = Optional.ofNullable(openDrawer.t2()).orElse(t2);
             printer.openDrawerWithCut(new SweetDrawerOptions(pin, t1, t2), cutOptions);
-        } else {
+        } else if(dataIsEmpty){
             printer.cut(cutOptions);
         }
     }
