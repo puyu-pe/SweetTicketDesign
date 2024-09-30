@@ -47,7 +47,8 @@ public class SweetDesigner {
             .orElse(defaultProvider.getDataComponent());
         SweetDesignHelper helper = makeSweetHelper(designObject.properties(), designObject.styles());
         blocks.forEach(block -> printBlock(block, helper));
-        openDrawerOrCut(designObject.openDrawer(), helper);
+        boolean onlyOpenDrawer = !blocks.isEmpty();
+        openDrawerOrCut(designObject.openDrawer(), helper, onlyOpenDrawer);
     }
 
     private @NotNull SweetDesignHelper makeSweetHelper(
@@ -309,9 +310,11 @@ public class SweetDesigner {
         return wrappedRow;
     }
 
-    private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper) {
+    private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper, boolean onlyOpenDrawer) {
         SweetProperties.CutProperty cutProperty = helper.getProperties().cutProperty();
-        SweetCutOptions cutOptions = new SweetCutOptions(cutProperty.feed(), cutProperty.mode());
+        int feed = onlyOpenDrawer ? cutProperty.feed() : 0;
+        SweetCutMode mode = onlyOpenDrawer ? cutProperty.mode() : SweetCutMode.FULL;
+        SweetCutOptions cutOptions = new SweetCutOptions(feed, mode);
         if (openDrawer != null) {
             SweetPinConnector pin = SweetPinConnector.Pin_2;
             int t1 = 120, t2 = 240;

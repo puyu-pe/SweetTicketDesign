@@ -52,7 +52,9 @@ public class EscPosPrinter implements SweetPrinter {
     @Override
     public void cut(@NotNull SweetCutOptions options) {
         try {
-            this.escpos.feed(options.feed());
+            if(options.feed() > 0){ // feed can't be zero, because causes corrupt impression
+                this.escpos.feed(options.feed());
+            }
             this.escpos.cut(EscPosUtil.toEscPosCutMode(options.mode()));
         } catch (Exception ignored) {
 
