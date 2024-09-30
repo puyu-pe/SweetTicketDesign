@@ -165,13 +165,18 @@ public class GsonPrinterObjectBuilder implements SweetPrinterObjectBuilder {
     }
 
     private @Nullable SweetOpenDrawerComponent buildOpenDrawerComponent() {
-        if (printerObject.has("openDrawer") && printerObject.get("openDrawer").isJsonObject()) {
-            GsonObject openDrawerElement = new GsonObject(printerObject.get("openDrawer").getAsJsonObject());
-            return new SweetOpenDrawerComponent(
-                SweetPinConnector.fromValue(openDrawerElement.getInt("pin")),
-                openDrawerElement.getInt("t1"),
-                openDrawerElement.getInt("t2")
-            );
+        if (printerObject.has("openDrawer")) {
+            JsonElement openDrawer = printerObject.get("openDrawer");
+            if (openDrawer.isJsonObject()) {
+                GsonObject openDrawerElement = new GsonObject(printerObject.get("openDrawer").getAsJsonObject());
+                return new SweetOpenDrawerComponent(
+                    SweetPinConnector.fromValue(openDrawerElement.getInt("pin")),
+                    openDrawerElement.getInt("t1"),
+                    openDrawerElement.getInt("t2")
+                );
+            } else if (openDrawer.isJsonPrimitive() && openDrawer.getAsJsonPrimitive().getAsBoolean()) {
+                return new SweetOpenDrawerComponent(null, null, null);
+            }
         }
         return null;
     }
