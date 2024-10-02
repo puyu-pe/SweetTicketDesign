@@ -1,4 +1,4 @@
-name: Publish package to the Maven Central Repository
+name: 🥵 Publish package to the Maven Central Repository 📦🚀
 on:
   workflow_dispatch:
 jobs:
@@ -16,7 +16,7 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: Update version
+      - name: Update version pom.xml
         run: mvn versions:set -DnewVersion=$(cat VERSION)
       - name: Publish package
         run: mvn --batch-mode deploy
