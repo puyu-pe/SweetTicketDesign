@@ -20,12 +20,6 @@ on:
         required: true
         type: string
 
-env:
-  OSSRH_USERNAME: ${{ github.event.inputs.ossrh_username }}
-  OSSRH_TOKEN: ${{ github.event.inputs.ossrh_token }}
-  GPG_PASSPHRASE: ${{ github.event.inputs.gpg_pass }}
-  GPG_KEY_NAME: ${{ github.event.inputs.gpg_key }}
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -43,7 +37,14 @@ jobs:
         run: rm ~/.m2/settings.xml && mv ./settings.xml ~/.m2
 
       - name: Export secret key
-        run: gpg --export-secret-keys --armor ${{github.event.inputs.gpg_key}} > private_gpg_key_backup.asc
+        run: gpg --export-secret-keys --armor ${{github.event.inputs.gpg_key}}
+
+      - name: Export .env variables
+        run: |
+          export OSSRH_USERNAME="${{ github.event.inputs.ossrh_username }}"
+          export OSSRH_TOKEN="${{ github.event.inputs.ossrh_token }}"
+          export GPG_PASSPHRASE="${{ github.event.inputs.gpg_pass }}"
+          export GPG_KEY_NAME="${{ github.event.inputs.gpg_key }}"
 
       - name: Update version pom.xml
         run: mvn versions:set -DnewVersion=$(cat VERSION)
