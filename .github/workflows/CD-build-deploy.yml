@@ -3,14 +3,6 @@ name: 🥵 Publish package to the Maven Central Repository 📦🚀
 on:
   workflow_dispatch:
     inputs:
-      gpg_key:
-        description: 'GPG_KEY_NAME'
-        required: true
-        type: string
-      gpg_pass:
-        description: 'GPG_PASSPHRASE'
-        required: true
-        type: string
       ossrh_username:
         description: 'OSSRH_USERNAME'
         required: true
@@ -25,38 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
-          overwrite-settings: false
-
-      - name: Configure settings.xml
-        run: rm ~/.m2/settings.xml && mv ./settings.xml ~/.m2
-
-      - name: Export secret key
-        run: gpg --export-secret-keys --armor ${{github.event.inputs.gpg_key}}
-
-      - name: Export .env variables
-        run: |
-          export OSSRH_USERNAME="${{ github.event.inputs.ossrh_username }}"
-          export OSSRH_TOKEN="${{ github.event.inputs.ossrh_token }}"
-          export GPG_PASSPHRASE="${{ github.event.inputs.gpg_pass }}"
-          export GPG_KEY_NAME="${{ github.event.inputs.gpg_key }}"
-
-      - name: Update version pom.xml
-        run: mvn versions:set -DnewVersion=$(cat VERSION)
-
-      - name: Build and package
-        run: mvn clean compile package
-
-      - name: Verify package
-        run: mvn verify -Poss-repository
-
-      - name: Install
-        run: mvn install -Poss-repository
-
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: Publish package
-        run: mvn deploy -Poss-repository
+        run: mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ github.event.inputs.ossrh_username }}
+          MAVEN_PASSWORD: ${{ github.event.inputs.ossrh_token }}
