@@ -1,6 +1,23 @@
 name: 🥵 Publish package to the Maven Central Repository 📦🚀
 on:
   workflow_dispatch:
+    inputs:
+      gpg_key:
+        description: 'GPG_SIGNING_KEY'
+        required: true
+        type: string
+      gpg_pass:
+        description: 'GPG_SIGNING_KEY_PASSWORD'
+        required: true
+        type: string
+      ossrh_username:
+        description: 'maven central username'
+        required: true
+        type: string
+      ossrh_token:
+        description: 'maven central token'
+        required: true
+        type: string
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -14,13 +31,13 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
+          gpg-private-key: ${{ github.event.inputs.gpg_key }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Update version pom.xml
         run: mvn versions:set -DnewVersion=$(cat VERSION)
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
+          MAVEN_USERNAME: ${{ github.event.inputs.ossrh_username }}
+          MAVEN_PASSWORD: ${{ github.event.inputs.ossrh_token }}
+          MAVEN_GPG_PASSPHRASE: ${{ github.event.inputs.gpg_pass }}
