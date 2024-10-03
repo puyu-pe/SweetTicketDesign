@@ -1,32 +1,27 @@
 name: 🥵 Publish package to the Maven Central Repository 📦🚀
 
 on:
-  workflow_dispatch:
-    inputs:
-      ossrh_username:
-        description: 'OSSRH_USERNAME'
-        required: true
-        type: string
-      ossrh_token:
-        description: 'OSSRH_TOKEN'
-        required: true
-        type: string
-
+  push:
+    tags:
+      - v*
+  pull_request:
+    branches: [ main ]
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Maven Central Repository
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '11'
           distribution: 'adopt'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
       - name: Publish package
-        run: mvn --batch-mode deploy
         env:
-          MAVEN_USERNAME: ${{ github.event.inputs.ossrh_username }}
-          MAVEN_PASSWORD: ${{ github.event.inputs.ossrh_token }}
+          JRELEASER_NEXUS2_USERNAME: ${{ secrets.JRELEASER_NEXUS2_USERNAME }}
+          JRELEASER_NEXUS2_PASSWORD: ${{ secrets.JRELEASER_NEXUS2_PASSWORD }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./mvn -Prelease deploy jreleaser:deploy -DaltDeploymentRepository=local::file:./target/staging-deploy
