@@ -32,15 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure settings.xml
-        run: mv ./settings.xml ~/.m2
-
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           overwrite-settings: false
+
+      - name: Configure settings.xml
+        run: rm ~/.m2/settings.xml && mv ./settings.xml ~/.m2
 
       - name: Update version pom.xml
         run: mvn versions:set -DnewVersion=$(cat VERSION)
