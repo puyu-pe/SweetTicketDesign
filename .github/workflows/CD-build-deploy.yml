@@ -1,44 +1,58 @@
 name: 🥵 Publish package to the Maven Central Repository 📦🚀
+
 on:
   workflow_dispatch:
     inputs:
       gpg_key:
-        description: 'GPG_SIGNING_KEY'
+        description: 'GPG_KEY_NAME'
         required: true
         type: string
       gpg_pass:
-        description: 'GPG_SIGNING_KEY_PASSWORD'
+        description: 'GPG_PASSPHRASE'
         required: true
         type: string
       ossrh_username:
-        description: 'maven central username'
+        description: 'OSSRH_USERNAME'
         required: true
         type: string
       ossrh_token:
-        description: 'maven central token'
+        description: 'OSSRH_TOKEN'
         required: true
         type: string
+
+env:
+  OSSRH_USERNAME: ${{ github.event.inputs.ossrh_username }}
+  OSSRH_TOKEN: ${{ github.event.inputs.ossrh_token }}
+  GPG_PASSPHRASE: ${{ github.event.inputs.gpg_pass }}
+  GPG_KEY_NAME: ${{ github.event.inputs.gpg_key }}
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure settings.xml
+        run: mv ./settings.xml ~/.m2
+
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: MAVEN_GPG_KEY
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          overwrite-settings: false
+
       - name: Update version pom.xml
         run: mvn versions:set -DnewVersion=$(cat VERSION)
+
+      - name: Build and package
+        run: mvn clean compile package
+
+      - name: Verify package
+        run: mvn verify -Poss-repository
+
+      - name: Install
+        run: mvn install -Poss-repository
+
       - name: Publish package
-        run: mvn --batch-mode deploy
-        env:
-          MAVEN_USERNAME: ${{ github.event.inputs.ossrh_username }}
-          MAVEN_PASSWORD: ${{ github.event.inputs.ossrh_token }}
-          MAVEN_GPG_PASSPHRASE: ${{ github.event.inputs.gpg_pass }}
-          MAVEN_GPG_KEY: ${{ github.event.inputs.gpg_key }}
+        run: mvn deploy -Poss-repository
