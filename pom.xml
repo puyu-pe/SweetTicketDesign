@@ -5,7 +5,7 @@
 
     <groupId>pe.puyu</groupId>
     <artifactId>SweetTicketDesign</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 
     <name>SweetTicketDesign</name>
     <description>Library for creating print layouts for printers</description>
@@ -147,7 +147,6 @@
                                         <active>ALWAYS</active>
                                         <url>https://s01.oss.sonatype.org/service/local</url>;
                                         <closeRepository>true</closeRepository>
-                                        <releaseRepository>true</releaseRepository>
                                         <releaseRepository>true</releaseRepository>
                                         <stagingRepositories>target/staging-deploy</stagingRepositories>
                                     </maven-central>
