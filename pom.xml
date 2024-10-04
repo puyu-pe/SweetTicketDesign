@@ -146,7 +146,7 @@
                                         <active>ALWAYS</active>
                                         <url>https://s01.oss.sonatype.org/service/local</url>;
                                         <closeRepository>true</closeRepository>
-                                        <releaseRepository>false</releaseRepository>
+                                        <releaseRepository>true</releaseRepository>
                                         <stagingRepositories>target/staging-deploy</stagingRepositories>
                                     </maven-central>
                                 </nexus2>
@@ -155,6 +155,7 @@
                         <release>
                             <github>
                                 <owner>puyu-pe</owner>
+                                <tagName>${project.version}</tagName>
                             </github>
                         </release>
                     </jreleaser>
