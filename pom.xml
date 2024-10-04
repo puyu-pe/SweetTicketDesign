@@ -5,7 +5,7 @@
 
     <groupId>pe.puyu</groupId>
     <artifactId>SweetTicketDesign</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <name>SweetTicketDesign</name>
     <description>Library for creating print layouts for printers</description>
     <url>https://github.coggm/puyu-pe/SweetTicketDesign</url>
@@ -127,6 +127,37 @@
                     <jlinkImageName>sweet-ticket-design</jlinkImageName>
                     <jlinkZipName>sweet-ticket-design</jlinkZipName>
                     <mainClass>pe.puyu.SweetTicketDesign/pe.puyu.SweetTicketDesign.Main</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>1.14.0</version>
+                <configuration>
+                    <jreleaser>
+                        <signing>
+                            <active>ALWAYS</active>
+                            <armored>true</armored>
+                        </signing>
+                        <deploy>
+                            <maven>
+                                <nexus2>
+                                    <maven-central>
+                                        <active>ALWAYS</active>
+                                        <url>https://s01.oss.sonatype.org/service/local</url>;
+                                        <closeRepository>true</closeRepository>
+                                        <releaseRepository>false</releaseRepository>
+                                        <stagingRepositories>target/staging-deploy</stagingRepositories>
+                                    </maven-central>
+                                </nexus2>
+                            </maven>
+                        </deploy>
+                        <release>
+                            <github>
+                                <owner>puyu-pe</owner>
+                            </github>
+                        </release>
+                    </jreleaser>
                 </configuration>
             </plugin>
         </plugins>
