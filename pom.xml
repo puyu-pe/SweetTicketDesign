@@ -148,7 +148,6 @@
                                         <url>https://s01.oss.sonatype.org/service/local</url>;
                                         <closeRepository>true</closeRepository>
                                         <releaseRepository>true</releaseRepository>
-                                        <releaseRepository>true</releaseRepository>
                                         <stagingRepositories>target/staging-deploy</stagingRepositories>
                                     </maven-central>
                                 </nexus2>
