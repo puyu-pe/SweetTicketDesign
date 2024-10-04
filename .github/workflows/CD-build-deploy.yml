@@ -3,6 +3,10 @@ name: 🥵 Publish package to the Maven Central Repository 📦🚀
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest
