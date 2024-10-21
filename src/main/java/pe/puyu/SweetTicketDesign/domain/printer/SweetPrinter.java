@@ -1,8 +1,6 @@
 package pe.puyu.SweetTicketDesign.domain.printer;
 
 import org.jetbrains.annotations.NotNull;
-import pe.puyu.SweetTicketDesign.domain.components.properties.SweetCutMode;
-import pe.puyu.SweetTicketDesign.domain.components.drawer.SweetPinConnector;
 
 import java.awt.image.BufferedImage;
 
@@ -17,5 +15,5 @@ public interface SweetPrinter {
 
     void cut(@NotNull SweetCutOptions options);
 
-    void openDrawerWithCut(@NotNull SweetDrawerOptions drawerOptions, @NotNull SweetCutOptions cutOptions);
+    void openDrawer(@NotNull SweetDrawerOptions drawerOptions);
 }

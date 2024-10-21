@@ -17,7 +17,6 @@ import javax.print.PrintService;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
        try (OutputStream outputStream = bixonSrpE300()) {
-            //FIXME: corregir el problema de la linea doble
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             testSweetDesigner(byteArrayOutputStream);
             outputStream.write(byteArrayOutputStream.toByteArray());

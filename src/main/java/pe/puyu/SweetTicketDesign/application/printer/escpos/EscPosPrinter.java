@@ -62,10 +62,10 @@ public class EscPosPrinter implements SweetPrinter {
     }
 
     @Override
-    public void openDrawerWithCut(@NotNull SweetDrawerOptions drawerOptions, @NotNull SweetCutOptions cutOptions) {
+    public void openDrawer(@NotNull SweetDrawerOptions drawerOptions) {
         try {
+            this.escpos.write(27).write(64);
             this.escpos.pulsePin(EscPosUtil.toPinConnector(drawerOptions.pin()), drawerOptions.t1(), drawerOptions.t2());
-            this.cut(cutOptions);
         } catch (Exception ignored) {
 
         }
