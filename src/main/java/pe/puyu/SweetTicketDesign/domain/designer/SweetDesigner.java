@@ -269,7 +269,6 @@ public class SweetDesigner {
         }
     }
 
-
     private @NotNull List<SweetRow> wrapRow(@NotNull SweetRow row, @NotNull SweetDesignHelper helper) {
         List<SweetRow> matrix = new LinkedList<>();
         int numberColumnsMatrix = 0;
@@ -311,9 +310,6 @@ public class SweetDesigner {
 
     private void openDrawerOrCut(@Nullable SweetOpenDrawerComponent openDrawer, @NotNull SweetDesignHelper helper, boolean dataIsEmpty) {
         SweetProperties.CutProperty cutProperty = helper.getProperties().cutProperty();
-        int feed = dataIsEmpty ? 0 : cutProperty.feed();
-        SweetCutMode mode = dataIsEmpty ? SweetCutMode.FULL : cutProperty.mode();
-        SweetCutOptions cutOptions = new SweetCutOptions(feed, mode);
         if (openDrawer != null) {
             SweetPinConnector pin = SweetPinConnector.Pin_2;
             int t1 = 120, t2 = 240;
@@ -324,8 +320,10 @@ public class SweetDesigner {
             pin = Optional.ofNullable(openDrawer.pin()).orElse(pin);
             t1 = Optional.ofNullable(openDrawer.t1()).orElse(t1);
             t2 = Optional.ofNullable(openDrawer.t2()).orElse(t2);
-            printer.openDrawerWithCut(new SweetDrawerOptions(pin, t1, t2), cutOptions);
-        } else {
+            printer.openDrawer(new SweetDrawerOptions(pin, t1, t2));
+        }
+        if (!dataIsEmpty) {
+            SweetCutOptions cutOptions = new SweetCutOptions(cutProperty.feed(), cutProperty.mode());
             printer.cut(cutOptions);
         }
     }
